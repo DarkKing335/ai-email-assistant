@@ -1,11 +1,11 @@
 from httpx import ASGITransport, AsyncClient
 import pytest
 
-from app.main import app
-from app.summarization.api import get_summarization_service
-from app.summarization.errors import SummarizationConfigurationError
-from app.summarization.models import SummarizationRequest
-from app.summarization.service import SummarizationService
+from src.main import app
+from src.summarization.api import get_summarization_service
+from src.summarization.errors import SummarizationConfigurationError
+from src.summarization.models import SummarizationRequest
+from src.summarization.service import SummarizationService
 from conftest import FakeProvider
 
 
@@ -31,7 +31,11 @@ async def test_summary_endpoint_returns_contract(message_factory, generated_summ
 
     assert response.status_code == 200
     body = response.json()
-    assert body["overview"] == generated_summary.overview
+    assert body["summary_text"] == generated_summary.summary_text
+    assert body["sender"] == "Alice <alice@example.com>"
+    assert body["subject"] == "Quarterly report"
+    assert body["raw_email"] is None
+    assert "overview" not in body
     assert body["source_message_ids"] == ["message-1"]
     assert body["request_id"] == response.headers["X-Request-ID"]
 

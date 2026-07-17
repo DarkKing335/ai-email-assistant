@@ -4,7 +4,7 @@ import time
 from collections.abc import Awaitable, Callable
 from uuid import uuid4
 
-from app.summarization.errors import (
+from src.summarization.errors import (
     ProviderConfigurationError,
     ProviderContentRejectedError,
     ProviderError,
@@ -13,13 +13,13 @@ from app.summarization.errors import (
     SummarizationContentRejectedError,
     SummarizationUnavailableError,
 )
-from app.summarization.models import (
+from src.summarization.models import (
     GeneratedSummary,
     SummarizationRequest,
     SummarizationResult,
 )
-from app.summarization.preprocessing import normalize_request
-from app.summarization.providers import SYSTEM_PROMPT, SummaryProvider, build_user_prompt
+from src.summarization.preprocessing import normalize_request
+from src.summarization.providers import SYSTEM_PROMPT, SummaryProvider, build_user_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -115,6 +115,7 @@ class SummarizationService:
                 invalid_output=bool(final_error and final_error.invalid_output)
             )
 
+        latest_message = normalized.messages[-1]
         logger.info(
             "summarization_succeeded request_id=%s provider=%s model=%s "
             "message_count=%d omitted_count=%d attempts=%d fallback_used=%s duration_ms=%d",
@@ -129,6 +130,9 @@ class SummarizationService:
         )
         return SummarizationResult(
             **summary.model_dump(),
+            sender=latest_message.sender,
+            subject=latest_message.subject or None,
+            raw_email=None,
             request_id=request_id,
             source_message_ids=retained_ids,
             omitted_message_ids=normalized.omitted_message_ids,

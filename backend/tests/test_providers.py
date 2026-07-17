@@ -1,8 +1,8 @@
-from app.summarization.errors import (
+from src.summarization.errors import (
     ProviderConfigurationError,
     ProviderContentRejectedError,
 )
-from app.summarization.providers import classify_provider_exception
+from src.summarization.providers import classify_provider_exception
 
 
 class AuthenticationError(Exception):

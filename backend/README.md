@@ -11,7 +11,7 @@ cd backend
 cp .env.example .env
 # Add both API keys and model identifiers to .env.
 uv sync --group dev
-uv run uvicorn app.main:app --reload
+uv run uvicorn src.main:app --reload
 ```
 
 OpenAPI documentation is available at `http://127.0.0.1:8000/docs` and health status at
@@ -40,9 +40,12 @@ Call `POST /api/v1/summaries` with one message or multiple messages sharing a no
 }
 ```
 
-The response contains a compact overview, at most seven cited key points, cited action items,
+The response contains compact `summary_text`, at most seven cited key points, cited action items,
 the detected language, and explicit processed/omitted message IDs. The reusable
 `SummarizationService` exposes the same contract directly to the future drafting component.
+
+For the complete module contract, orchestration handoff, and AI-agent implementation rules,
+read [`src/summarization/README.md`](src/summarization/README.md).
 
 ## Test
 

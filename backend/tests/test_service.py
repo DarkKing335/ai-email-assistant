@@ -1,7 +1,7 @@
 import pytest
 import logging
 
-from app.summarization.errors import (
+from src.summarization.errors import (
     ProviderConfigurationError,
     ProviderContentRejectedError,
     ProviderError,
@@ -9,8 +9,8 @@ from app.summarization.errors import (
     SummarizationContentRejectedError,
     SummarizationUnavailableError,
 )
-from app.summarization.models import GeneratedSummary, SummarizationRequest
-from app.summarization.service import SummarizationService
+from src.summarization.models import GeneratedSummary, SummarizationRequest
+from src.summarization.service import SummarizationService
 from conftest import FakeProvider
 
 
@@ -55,7 +55,11 @@ async def test_primary_retries_once_then_uses_fallback(message_factory, generate
 
     result = await service.summarize(SummarizationRequest(messages=[message_factory()]))
 
-    assert result.overview == generated_summary.overview
+    assert result.summary_text == generated_summary.summary_text
+    assert result.overview == generated_summary.summary_text
+    assert result.sender == "Alice <alice@example.com>"
+    assert result.subject == "Quarterly report"
+    assert result.raw_email is None
     assert primary.calls == 2
     assert fallback.calls == 1
 
@@ -63,7 +67,7 @@ async def test_primary_retries_once_then_uses_fallback(message_factory, generate
 @pytest.mark.asyncio
 async def test_invalid_citation_retries_and_falls_back(message_factory, generated_summary):
     invalid = GeneratedSummary(
-        overview="A concise but invalid summary. It cites an email outside this request.",
+        summary_text="A concise but invalid summary. It cites an email outside this request.",
         key_points=[{"text": "Unsupported", "source_message_ids": ["other-email"]}],
         action_items=[],
         language="en",
@@ -84,7 +88,7 @@ async def test_invalid_output_from_both_providers_returns_typed_error(
     message_factory, generated_summary
 ):
     invalid = GeneratedSummary(
-        overview="Invalid citation. This output must not reach the caller.",
+        summary_text="Invalid citation. This output must not reach the caller.",
         key_points=[{"text": "Unsupported", "source_message_ids": ["unknown"]}],
         action_items=[],
         language="en",

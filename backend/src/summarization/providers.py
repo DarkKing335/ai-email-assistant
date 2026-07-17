@@ -3,13 +3,13 @@ from typing import Protocol
 
 from pydantic import ValidationError
 
-from app.summarization.errors import (
+from src.summarization.errors import (
     ProviderConfigurationError,
     ProviderContentRejectedError,
     ProviderError,
     ProviderInvalidOutputError,
 )
-from app.summarization.models import GeneratedSummary
+from src.summarization.models import GeneratedSummary
 
 
 class SummaryProvider(Protocol):
@@ -148,9 +148,9 @@ Security rules:
 
 Accuracy and output rules:
 - Use only facts supported by the retained messages.
-- Write the overview in the dominant language of the retained thread and return its ISO 639-1
+- Write summary_text in the dominant language of the retained thread and return its ISO 639-1
   language code, or "und" if it cannot be determined.
-- Keep the overview to two through four sentences and return no more than seven key points.
+- Keep summary_text to two through four sentences and return no more than seven key points.
 - Preserve distinct action items. Use null for an unstated owner or deadline.
 - Preserve ambiguous or relative deadlines as written; do not resolve or invent them.
 - Every key point and action item must cite one or more supplied message_id values.

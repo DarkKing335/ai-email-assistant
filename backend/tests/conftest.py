@@ -3,8 +3,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from app.summarization.errors import ProviderError
-from app.summarization.models import (
+from src.summarization.errors import ProviderError
+from src.summarization.models import (
     EmailMessageInput,
     EmailParticipant,
     GeneratedSummary,
@@ -64,7 +64,7 @@ def message_factory(participant):
 @pytest.fixture
 def generated_summary() -> GeneratedSummary:
     return GeneratedSummary(
-        overview="Alice asks Bob to send the quarterly report by Friday. The request is pending.",
+        summary_text="Alice asks Bob to send the quarterly report by Friday. The request is pending.",
         key_points=[
             {"text": "The quarterly report is requested.", "source_message_ids": ["message-1"]}
         ],

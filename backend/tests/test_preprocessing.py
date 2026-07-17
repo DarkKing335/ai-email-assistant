@@ -2,9 +2,9 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from app.summarization.errors import InvalidEmailContentError, InputTooLargeError
-from app.summarization.models import SummarizationRequest
-from app.summarization.preprocessing import (
+from src.summarization.errors import InvalidEmailContentError, InputTooLargeError
+from src.summarization.models import SummarizationRequest
+from src.summarization.preprocessing import (
     conservative_cleanup,
     html_to_visible_text,
     normalize_request,

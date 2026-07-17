@@ -5,9 +5,9 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.summarization.api import router as summarization_router
-from app.summarization.errors import SummarizationError
-from app.summarization.models import ErrorResponse
+from src.summarization.api import router as summarization_router
+from src.summarization.errors import SummarizationError
+from src.summarization.models import ErrorResponse
 
 logging.basicConfig(level=logging.INFO)
 

@@ -2,8 +2,8 @@ import re
 
 from bs4 import BeautifulSoup
 
-from app.summarization.errors import InvalidEmailContentError, InputTooLargeError
-from app.summarization.models import (
+from src.summarization.errors import InvalidEmailContentError, InputTooLargeError
+from src.summarization.models import (
     EmailMessageInput,
     NormalizedAttachment,
     NormalizedMessage,

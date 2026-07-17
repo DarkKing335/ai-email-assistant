@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError
 
-from app.summarization.models import SummarizationRequest
+from src.summarization.models import SummarizationRequest
 
 
 def test_multiple_messages_must_share_a_thread(message_factory):

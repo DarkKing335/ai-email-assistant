@@ -2,10 +2,10 @@ import os
 
 import pytest
 
-from app.config import Settings
-from app.summarization.models import EmailMessageInput, EmailParticipant, SummarizationRequest
-from app.summarization.preprocessing import normalize_request
-from app.summarization.providers import (
+from src.config import Settings
+from src.summarization.models import EmailMessageInput, EmailParticipant, SummarizationRequest
+from src.summarization.preprocessing import normalize_request
+from src.summarization.providers import (
     SYSTEM_PROMPT,
     GeminiSummaryProvider,
     GroqSummaryProvider,
@@ -60,7 +60,7 @@ async def test_provider_live_smoke_test(provider_name: str):
         user_prompt=build_user_prompt(normalized.model_dump(mode="json")),
     )
 
-    assert result.overview
+    assert result.summary_text
     assert all(
         set(item.source_message_ids) == {"live-smoke-1"}
         for item in (*result.key_points, *result.action_items)

@@ -83,13 +83,25 @@ class ActionItem(BoundaryModel):
 class GeneratedSummary(BoundaryModel):
     """The exact structured payload every model adapter must produce."""
 
-    overview: str = Field(min_length=1, max_length=4_000)
+    summary_text: str = Field(min_length=1, max_length=4_000)
     key_points: list[CitedItem] = Field(default_factory=list, max_length=7)
     action_items: list[ActionItem] = Field(default_factory=list, max_length=20)
     language: str = Field(pattern=r"^(?:[a-z]{2,3}|und)$")
 
+    @property
+    def overview(self) -> str:
+        """Backward-compatible Python alias; API serialization uses summary_text."""
+        return self.summary_text
+
 
 class SummarizationResult(GeneratedSummary):
+    # These fields intentionally match src.orchestrator.contracts.EmailSummary.
+    sender: str | None = Field(default=None, max_length=500)
+    subject: str | None = Field(default=None, max_length=998)
+    raw_email: None = Field(
+        default=None,
+        description="Raw email content is intentionally never forwarded to orchestration.",
+    )
     request_id: str
     source_message_ids: list[str]
     omitted_message_ids: list[str] = Field(default_factory=list)
