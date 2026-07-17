@@ -1,5 +1,17 @@
+# ===== Shared / core =====
 pydantic>=2.5.0
-Jinja2>=3.1.0
+pydantic-settings>=2.2.0
 python-dotenv>=1.0.0
-openai>=1.30.0
-google-generativeai>=0.7.0
+
+# ===== Summarizer (FastAPI service) =====
+fastapi>=0.110.0
+uvicorn>=0.29.0
+email-validator>=2.1.0
+beautifulsoup4>=4.12.0
+groq>=0.11.0
+google-genai>=0.3.0
+
+# ===== Orchestrator =====
+# Uses the same providers as the summarizer above: groq (primary) + google-genai
+# (fallback). Only Jinja2 is orchestrator-specific.
+Jinja2>=3.1.0

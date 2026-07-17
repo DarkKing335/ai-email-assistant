@@ -1,13 +1,14 @@
 """
 LLM client — provider-agnostic.
 
-Thứ tự thử: OpenAI (primary) -> Gemini (fallback) -> Mock (khi không có key).
+Thứ tự thử: Groq (primary) -> Gemini (fallback) -> Mock (khi không có key).
+Giống thứ tự provider của Summarizer để dùng chung cấu hình.
 Mỗi provider trả về JSON đã parse (dict). Orchestrator sẽ validate bằng Pydantic.
 """
 import json
 from typing import Any, Dict, List, Tuple
 
-from .config import settings
+from src.config import get_settings
 
 
 class LLMRoutingError(Exception):
@@ -39,6 +40,7 @@ class LLMClient:
     def route(
         self, system_prompt: str, user_content: str, json_schema: dict
     ) -> Tuple[Dict[str, Any], str]:
+        settings = get_settings()
         errors: List[str] = []
 
         # Ép model trả JSON theo đúng schema (nhét schema vào system prompt).
@@ -48,11 +50,11 @@ class LLMClient:
             f"{json.dumps(json_schema, ensure_ascii=False)}"
         )
 
-        if settings.has_openai:
+        if settings.has_groq:
             try:
-                return self._route_openai(schema_hint, user_content), "openai"
+                return self._route_groq(schema_hint, user_content), "groq"
             except Exception as e:  # noqa: BLE001 - gom lỗi để fallback
-                errors.append(f"openai: {e}")
+                errors.append(f"groq: {e}")
 
         if settings.has_gemini:
             try:
@@ -61,19 +63,21 @@ class LLMClient:
                 errors.append(f"gemini: {e}")
 
         # Không có key nào (hoặc mọi provider fail nhưng vẫn muốn chạy demo) -> Mock.
-        if not settings.has_openai and not settings.has_gemini:
+        if not settings.has_groq and not settings.has_gemini:
             return self._route_mock(user_content), "mock"
 
         raise LLMRoutingError("Tất cả provider thất bại -> " + " | ".join(errors))
 
-    # ------------------------------------------------------------------ OpenAI
-    def _route_openai(self, system_prompt: str, user_content: str) -> Dict[str, Any]:
-        from openai import OpenAI
+    # -------------------------------------------------------------------- Groq
+    def _route_groq(self, system_prompt: str, user_content: str) -> Dict[str, Any]:
+        from groq import Groq
 
-        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        settings = get_settings()
+        client = Groq(api_key=settings.groq_api_key.get_secret_value())
         resp = client.chat.completions.create(
-            model=settings.OPENAI_MODEL,
+            model=settings.groq_model,
             response_format={"type": "json_object"},
+            temperature=0,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content},
@@ -83,15 +87,20 @@ class LLMClient:
 
     # ------------------------------------------------------------------ Gemini
     def _route_gemini(self, system_prompt: str, user_content: str) -> Dict[str, Any]:
-        import google.generativeai as genai
+        from google import genai
+        from google.genai import types
 
-        genai.configure(api_key=settings.GEMINI_API_KEY)
-        model = genai.GenerativeModel(
-            model_name=settings.GEMINI_MODEL,
-            system_instruction=system_prompt,
-            generation_config={"response_mime_type": "application/json"},
+        settings = get_settings()
+        client = genai.Client(api_key=settings.gemini_api_key.get_secret_value())
+        resp = client.models.generate_content(
+            model=settings.gemini_model or "gemini-2.5-flash",
+            contents=user_content,
+            config=types.GenerateContentConfig(
+                system_instruction=system_prompt,
+                temperature=0,
+                response_mime_type="application/json",
+            ),
         )
-        resp = model.generate_content(user_content)
         return _extract_json(resp.text or "")
 
     # -------------------------------------------------------------------- Mock

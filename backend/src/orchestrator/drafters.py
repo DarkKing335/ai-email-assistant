@@ -10,8 +10,7 @@ Khi teammate làm Drafter bằng LLM, chỉ cần tạo class mới implement in
 from typing import Any, Dict
 
 from src.email_module.services import EmailTemplateService
-
-from .contracts import EmailSummary
+from src.summarization.models import SummarizationResult
 
 
 class TemplateRenderDrafter:
@@ -24,6 +23,6 @@ class TemplateRenderDrafter:
         self,
         template_id: str,
         extracted_data: Dict[str, Any],
-        summary: EmailSummary,  # noqa: ARG002 - renderer deterministic không cần summary
+        summary: SummarizationResult,  # noqa: ARG002 - renderer deterministic không cần summary
     ) -> str:
         return self._service.generate_final_email(template_id, extracted_data)

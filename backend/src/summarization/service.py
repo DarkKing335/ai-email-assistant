@@ -4,7 +4,7 @@ import time
 from collections.abc import Awaitable, Callable
 from uuid import uuid4
 
-from app.summarization.errors import (
+from src.summarization.errors import (
     ProviderConfigurationError,
     ProviderContentRejectedError,
     ProviderError,
@@ -13,13 +13,13 @@ from app.summarization.errors import (
     SummarizationContentRejectedError,
     SummarizationUnavailableError,
 )
-from app.summarization.models import (
+from src.summarization.models import (
     GeneratedSummary,
     SummarizationRequest,
     SummarizationResult,
 )
-from app.summarization.preprocessing import normalize_request
-from app.summarization.providers import SYSTEM_PROMPT, SummaryProvider, build_user_prompt
+from src.summarization.preprocessing import normalize_request
+from src.summarization.providers import SYSTEM_PROMPT, SummaryProvider, build_user_prompt
 
 logger = logging.getLogger(__name__)
 

@@ -5,14 +5,17 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.summarization.api import router as summarization_router
-from app.summarization.errors import SummarizationError
-from app.summarization.models import ErrorResponse
+from src.orchestrator.api import router as orchestrator_router
+from src.orchestrator.llm_client import LLMRoutingError
+from src.summarization.api import router as summarization_router
+from src.summarization.errors import SummarizationError
+from src.summarization.models import ErrorResponse
 
 logging.basicConfig(level=logging.INFO)
 
 app = FastAPI(title="AI Email Assistant", version="0.1.0")
 app.include_router(summarization_router)
+app.include_router(orchestrator_router)
 
 
 @app.middleware("http")
@@ -44,6 +47,18 @@ async def validation_error_handler(request: Request, _exc: RequestValidationErro
         retryable=False,
     )
     return JSONResponse(status_code=422, content=payload.model_dump())
+
+
+@app.exception_handler(LLMRoutingError)
+async def llm_routing_error_handler(request: Request, _exc: LLMRoutingError) -> JSONResponse:
+    # All routing providers failed; don't leak provider error details to the caller.
+    payload = ErrorResponse(
+        request_id=request.state.request_id,
+        code="routing_unavailable",
+        message="Unable to route the email right now. Please try again later.",
+        retryable=True,
+    )
+    return JSONResponse(status_code=502, content=payload.model_dump())
 
 
 @app.get("/health")

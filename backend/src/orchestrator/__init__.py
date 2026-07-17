@@ -1,4 +1,6 @@
-from .orchestrator import EmailOrchestrator
-from .contracts import EmailSummary, DraftResult, Drafter
+from src.summarization.models import SummarizationResult
 
-__all__ = ["EmailOrchestrator", "EmailSummary", "DraftResult", "Drafter"]
+from .orchestrator import EmailOrchestrator
+from .contracts import DraftResult, Drafter
+
+__all__ = ["EmailOrchestrator", "SummarizationResult", "DraftResult", "Drafter"]

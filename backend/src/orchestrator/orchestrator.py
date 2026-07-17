@@ -3,19 +3,20 @@ EmailOrchestrator — nhạc trưởng của luồng.
 
 run(summary):
     1. build routing prompt (catalog + json schema)  [từ email_module]
-    2. LLM routing call (OpenAI -> Gemini -> Mock)
+    2. LLM routing call (Groq -> Gemini -> Mock)
     3. validate + confidence/fallback
     4. delegate cho Drafter (chỉ chuyển dữ liệu)
     5. trả DraftResult
 """
 from pydantic import ValidationError
 
+from src.config import get_settings
 from src.email_module.schemas import EmailRoutingSchema
 from src.email_module.services import EmailTemplateService
 from src.email_module.templates import TemplateID
+from src.summarization.models import SummarizationResult
 
-from .config import settings
-from .contracts import Drafter, DraftResult, EmailSummary
+from .contracts import Drafter, DraftResult
 from .drafters import TemplateRenderDrafter
 from .llm_client import LLMClient
 
@@ -35,7 +36,7 @@ class EmailOrchestrator:
         # Drafter mặc định = render deterministic. Teammate có thể thay bằng LLM drafter.
         self.drafter: Drafter = drafter or TemplateRenderDrafter(self.template_service)
 
-    def run(self, summary: EmailSummary) -> DraftResult:
+    def run(self, summary: SummarizationResult) -> DraftResult:
         # 1. Chuẩn bị "vũ khí" cho LLM (email_module đã dọn sẵn).
         system_prompt = self.template_service.get_llm_system_prompt_context()
         json_schema = self.template_service.get_json_schema_for_tools()
@@ -57,7 +58,7 @@ class EmailOrchestrator:
             )
 
         # 3b. Confidence thấp -> degrade an toàn.
-        if confidence < settings.CONFIDENCE_THRESHOLD and template_id != _FALLBACK_TEMPLATE:
+        if confidence < get_settings().confidence_threshold and template_id != _FALLBACK_TEMPLATE:
             template_id, used_fallback = _FALLBACK_TEMPLATE, True
             extracted_data.setdefault("customer_name", "Quý khách")
 
@@ -81,11 +82,19 @@ class EmailOrchestrator:
         )
 
     @staticmethod
-    def _build_user_content(summary: EmailSummary) -> str:
-        parts = []
-        if summary.sender:
-            parts.append(f"Người gửi: {summary.sender}")
-        if summary.subject:
-            parts.append(f"Tiêu đề: {summary.subject}")
-        parts.append(f"Tóm tắt email: {summary.summary_text}")
+    def _build_user_content(summary: SummarizationResult) -> str:
+        # Dùng trực tiếp output có cấu trúc của Summarizer làm ngữ cảnh routing.
+        parts = [f"Tóm tắt email: {summary.overview}"]
+
+        if summary.key_points:
+            parts.append("Điểm chính:")
+            parts.extend(f"- {point.text}" for point in summary.key_points)
+
+        if summary.action_items:
+            parts.append("Hành động cần làm:")
+            for item in summary.action_items:
+                owner = f" (phụ trách: {item.owner})" if item.owner else ""
+                deadline = f" [hạn: {item.deadline}]" if item.deadline else ""
+                parts.append(f"- {item.task}{owner}{deadline}")
+
         return "\n".join(parts)

@@ -3,13 +3,13 @@ from typing import Protocol
 
 from pydantic import ValidationError
 
-from app.summarization.errors import (
+from src.summarization.errors import (
     ProviderConfigurationError,
     ProviderContentRejectedError,
     ProviderError,
     ProviderInvalidOutputError,
 )
-from app.summarization.models import GeneratedSummary
+from src.summarization.models import GeneratedSummary
 
 
 class SummaryProvider(Protocol):

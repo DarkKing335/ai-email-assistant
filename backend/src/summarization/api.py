@@ -1,11 +1,11 @@
 from functools import lru_cache
 from fastapi import APIRouter, Depends, Request
 
-from app.config import get_settings
-from app.summarization.errors import ProviderConfigurationError, SummarizationConfigurationError
-from app.summarization.models import SummarizationRequest, SummarizationResult
-from app.summarization.providers import GeminiSummaryProvider, GroqSummaryProvider
-from app.summarization.service import SummarizationService
+from src.config import get_settings
+from src.summarization.errors import ProviderConfigurationError, SummarizationConfigurationError
+from src.summarization.models import SummarizationRequest, SummarizationResult
+from src.summarization.providers import GeminiSummaryProvider, GroqSummaryProvider
+from src.summarization.service import SummarizationService
 
 router = APIRouter(prefix="/api/v1/summaries", tags=["summarization"])
 
