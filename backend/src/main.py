@@ -1,21 +1,52 @@
 import logging
+from contextlib import asynccontextmanager
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from src.database import close_db, init_db
 from src.orchestrator.api import router as orchestrator_router
 from src.orchestrator.llm_client import LLMRoutingError
 from src.summarization.api import router as summarization_router
 from src.summarization.errors import SummarizationError
 from src.summarization.models import ErrorResponse
 
+# AutoReply routers
+from src.auto_reply.api.dashboard_router import router as dashboard_router
+from src.auto_reply.api.draft_router import router as draft_router
+from src.auto_reply.api.gmail_router import router as gmail_router
+from src.auto_reply.api.log_router import router as log_router
+from src.auto_reply.api.whitelist_router import router as whitelist_router
+from src.auto_reply.workflow.background_worker import start_workers, stop_workers
+
 logging.basicConfig(level=logging.INFO)
 
-app = FastAPI(title="AI Email Assistant", version="0.1.0")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    await init_db()
+    await start_workers()
+    yield
+    # Shutdown
+    await stop_workers()
+    await close_db()
+
+
+app = FastAPI(title="AI Email Assistant", version="0.2.0", lifespan=lifespan)
+
+# Existing routers
 app.include_router(summarization_router)
 app.include_router(orchestrator_router)
+
+# AutoReply routers
+app.include_router(whitelist_router)
+app.include_router(draft_router)
+app.include_router(log_router)
+app.include_router(dashboard_router)
+app.include_router(gmail_router)
 
 
 @app.middleware("http")

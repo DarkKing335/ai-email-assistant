@@ -3,8 +3,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from app.summarization.errors import ProviderError
-from app.summarization.models import (
+from src.summarization.errors import ProviderError
+from src.summarization.models import (
     EmailMessageInput,
     EmailParticipant,
     GeneratedSummary,
