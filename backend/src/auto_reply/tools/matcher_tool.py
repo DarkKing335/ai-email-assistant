@@ -5,8 +5,9 @@ Match precedence (highest → lowest):
   1. Exact email match (e.g. ``alice@company.com``)
   2. Domain match (e.g. ``@company.com``)
 
-Within each tier, the entry with the highest ``priority`` wins.
-Tie-broken by lowest ``id`` (insertion order).
+No tie-breaking is needed within a tier: ``uq_whitelist_value_active`` permits
+only one active row per value, so a sender matches at most one exact rule and
+at most one domain rule.
 
 The cache is invalidated on any write operation.
 """
@@ -101,7 +102,8 @@ class MatcherTool:
 
         for entry in entries:
             if entry.entry_type == EntryType.EMAIL and entry.value == email:
-                # Entries are pre-sorted by priority desc; first hit = best
+                # The None guard is belt-and-braces: uniqueness on (value,
+                # is_active) means this can only ever hit once.
                 if best_exact is None:
                     best_exact = entry
             elif entry.entry_type == EntryType.DOMAIN and entry.value == domain:

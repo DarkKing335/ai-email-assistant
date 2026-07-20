@@ -11,7 +11,9 @@ No existing orchestrator code is modified.
 """
 from __future__ import annotations
 
+import asyncio
 import logging
+from dataclasses import dataclass
 
 from src.auto_reply.proxy.gmail_adapter import InboundEmailEvent
 from src.orchestrator.contracts import DraftResult
@@ -27,6 +29,24 @@ from src.summarization.service import SummarizationService
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class DraftGeneration:
+    """Both halves of the pipeline's output.
+
+    The summary used to be a local variable that went out of scope the moment
+    the draft was returned — every whitelisted email paid for that LLM call and
+    then threw the result away. Returning it here lets the workflow persist it,
+    which is what the Inbox view reads.
+
+    Kept separate from `DraftResult` on purpose: that is the orchestrator's
+    contract, and the summary is an *input* to routing, not the orchestrator's
+    output.
+    """
+
+    draft: DraftResult
+    summary: SummarizationResult
+
+
 class LLMAdapter:
     """Coordinate summarization → orchestration to produce a draft reply."""
 
@@ -38,8 +58,11 @@ class LLMAdapter:
         self._summarizer = summarization_service
         self._orchestrator = orchestrator
 
-    async def generate_draft(self, event: InboundEmailEvent) -> DraftResult:
+    async def generate_draft(self, event: InboundEmailEvent) -> DraftGeneration:
         """Summarise `event` and generate a draft reply.
+
+        Returns both the draft and the summary it was built from, so the caller
+        can persist the summary rather than discard it.
 
         Parameters
         ----------
@@ -54,8 +77,13 @@ class LLMAdapter:
             request, request_id=event.gmail_message_id
         )
 
-        # Route + draft
-        draft: DraftResult = self._orchestrator.run(summary)
+        # Route + draft.
+        #
+        # `run()` is synchronous and now makes *two* blocking LLM calls (routing,
+        # then drafting). Called directly it would block the event loop for
+        # several seconds — freezing the background worker and every API request
+        # the panel makes, since they share one loop. Off to a thread it goes.
+        draft: DraftResult = await asyncio.to_thread(self._orchestrator.run, summary)
 
         logger.info(
             "llm_adapter_draft_generated message_id=%s template=%s provider=%s fallback=%s",
@@ -64,7 +92,7 @@ class LLMAdapter:
             draft.provider_used,
             draft.used_fallback,
         )
-        return draft
+        return DraftGeneration(draft=draft, summary=summary)
 
     @staticmethod
     def _build_summarization_request(event: InboundEmailEvent) -> SummarizationRequest:

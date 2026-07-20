@@ -29,7 +29,10 @@ class SummarizationService:
         self,
         *,
         primary: SummaryProvider,
-        fallback: SummaryProvider,
+        # Optional: a Groq-only setup is a perfectly valid configuration, and
+        # requiring a second provider would mean no summarization at all
+        # without two API keys.
+        fallback: SummaryProvider | None,
         max_messages: int = 20,
         max_normalized_chars: int = 100_000,
         retry_delay_seconds: float = 0.25,
@@ -85,7 +88,12 @@ class SummarizationService:
                 if self.retry_delay_seconds:
                     await self._sleep(self.retry_delay_seconds)
 
-        if summary is None and final_error and final_error.allows_fallback:
+        if (
+            summary is None
+            and final_error
+            and final_error.allows_fallback
+            and self.fallback is not None
+        ):
             attempts += 1
             fallback_used = True
             provider_used = self.fallback.name

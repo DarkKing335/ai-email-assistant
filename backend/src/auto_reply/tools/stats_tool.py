@@ -53,9 +53,9 @@ class StatsTool:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def get_summary(self, since_days: int = 7) -> DashboardSummary:
+    async def get_summary(self, since_hours: int = 24) -> DashboardSummary:
         now = datetime.now(UTC)
-        since = now - timedelta(days=since_days)
+        since = now - timedelta(hours=since_hours)
 
         summary = DashboardSummary(
             since=since.isoformat(),
@@ -131,6 +131,18 @@ class StatsTool:
         summary.active_whitelist_entries = result.scalar_one() or 0
 
         # 8. Top senders (by match count, within window)
+        #
+        # Filtered on the FK alone — the same test `matched_whitelist` uses — so
+        # the two agree by construction. An earlier version joined
+        # `WhitelistEntry` and required `is_active`, meaning to drop removed
+        # senders off the chart. That made the panel contradict itself:
+        # deactivating a rule erased its sender here while Matched went on
+        # counting their mail, and deletion is *soft*, so the counts diverged
+        # permanently with nothing on screen explaining the gap.
+        #
+        # Every figure in this summary answers "what happened in this window",
+        # never "what would today's rules do". A rule that has since been
+        # removed still processed the mail it processed.
         result = await self._session.execute(
             select(MatchLog.sender_email, func.count().label("count"))
             .where(

@@ -173,7 +173,6 @@ class BulkImportTool:
             {
                 "value": r.value,
                 "entry_type": r.entry_type,
-                "priority": r.priority,
                 "created_by": created_by,
             }
             for r in valid_rows

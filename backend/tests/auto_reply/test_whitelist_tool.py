@@ -57,7 +57,6 @@ async def test_soft_delete_and_reactivate(db_session):
         await tool.get_entry(entry.id)
         
     # Re-creating should reactivate
-    reactivated = await tool.create_entry("charlie@example.com", priority=10)
+    reactivated = await tool.create_entry("charlie@example.com")
     assert reactivated.id == entry.id
     assert reactivated.is_active is True
-    assert reactivated.priority == 10

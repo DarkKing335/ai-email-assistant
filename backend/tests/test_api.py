@@ -1,11 +1,11 @@
 from httpx import ASGITransport, AsyncClient
 import pytest
 
-from app.main import app
-from app.summarization.api import get_summarization_service
-from app.summarization.errors import SummarizationConfigurationError
-from app.summarization.models import SummarizationRequest
-from app.summarization.service import SummarizationService
+from src.main import app
+from src.summarization.api import get_summarization_service
+from src.summarization.errors import SummarizationConfigurationError
+from src.summarization.models import SummarizationRequest
+from src.summarization.service import SummarizationService
 from conftest import FakeProvider
 
 

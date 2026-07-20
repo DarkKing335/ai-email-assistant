@@ -1,0 +1,4040 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>system-overview.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="ai-email-assistant--system-overview">AI Email Assistant — System Overview</h1>
+<blockquote>
+<p><strong>Version:</strong> MVP (backend <code>0.2.0</code>)
+<strong>Last updated:</strong> 2026-07-20
+<strong>Audience:</strong> end users <em>and</em> developers — see the reading guide below.</p>
+</blockquote>
+<hr>
+<h2 id="how-to-read-this-document">How to read this document</h2>
+<p>This document is written for two different readers. Nothing is duplicated; each
+section is simply labelled with who it is for.</p>
+<table>
+<thead>
+<tr>
+<th>If you are…</th>
+<th>Read these sections</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A user</strong> (you want to use the product)</td>
+<td><a href="#1-system-overview">1. System Overview</a> · <a href="#2-product-vision">2. Product Vision</a> · <a href="#3-mvp-scope">3. MVP Scope</a> · <a href="#6-feature-specifications">6. Feature Specifications</a> · <a href="#8-user-flows">8. User Flows</a> · <a href="#10-limitations">10. Limitations</a> · <a href="#12-glossary">12. Glossary</a></td>
+</tr>
+<tr>
+<td><strong>A developer</strong> (you want to build on it)</td>
+<td>Everything, but especially <a href="#4-system-architecture">4. System Architecture</a> · <a href="#5-module-breakdown">5. Module Breakdown</a> · <a href="#7-user-stories">7. User Stories</a> · <a href="#9-technical-notes">9. Technical Notes</a> · <a href="#11-future-improvements">11. Future Improvements</a></td>
+</tr>
+</tbody>
+</table>
+<p>Sections marked <strong>👤 User</strong> describe what a person sees and does.
+Sections marked <strong>🛠 Developer</strong> describe how the system is built.</p>
+<hr>
+<h2 id="table-of-contents">Table of contents</h2>
+<ol>
+<li><a href="#1-system-overview">System Overview</a></li>
+<li><a href="#2-product-vision">Product Vision</a></li>
+<li><a href="#3-mvp-scope">MVP Scope</a></li>
+<li><a href="#4-system-architecture">System Architecture</a></li>
+<li><a href="#5-module-breakdown">Module Breakdown</a></li>
+<li><a href="#6-feature-specifications">Feature Specifications</a></li>
+<li><a href="#7-user-stories">User Stories</a></li>
+<li><a href="#8-user-flows">User Flows</a></li>
+<li><a href="#9-technical-notes">Technical Notes</a></li>
+<li><a href="#10-limitations">Limitations</a></li>
+<li><a href="#11-future-improvements">Future Improvements</a></li>
+<li><a href="#12-glossary">Glossary</a></li>
+</ol>
+<hr>
+<h1 id="1-system-overview">1. System Overview</h1>
+<h2 id="-in-one-paragraph">👤 In one paragraph</h2>
+<p><strong>AI Email Assistant watches your Gmail inbox for mail from people you have
+explicitly listed, reads each of those emails for you, and leaves a reply
+waiting in Gmail as a draft.</strong> Nothing is ever sent. You open the thread, read
+what was written, edit it if you want, and press Send yourself — or delete it.
+The product is a sidebar that lives next to Gmail in Chrome.</p>
+<h2 id="-what-it-is-not">👤 What it is not</h2>
+<ul>
+<li>It is <strong>not</strong> a chatbot. There is no conversation box.</li>
+<li>It does <strong>not</strong> send email. Ever. It only creates drafts.</li>
+<li>It does <strong>not</strong> touch mail from senders you have not listed. Those are
+recorded as <em>skipped</em> and cost nothing.</li>
+</ul>
+<h2 id="-in-one-paragraph-1">🛠 In one paragraph</h2>
+<p>A Chrome Manifest V3 side-panel extension (React + TypeScript + Vite) rendering
+data from a local FastAPI backend (Python 3.12, SQLAlchemy async, SQLite). The
+backend owns Google OAuth, polls the Gmail API on an interval, matches each
+inbound sender against a whitelist, runs a two-stage LLM pipeline
+(summarize → route + draft), persists the result, and files the reply through
+<code>gmail.drafts.create</code>. The extension holds <strong>no</strong> Google credentials and
+requests <strong>no</strong> Gmail permissions; it is a view over the backend's database.</p>
+<h2 id="the-one-line-pipeline">The one-line pipeline</h2>
+<pre class="hljs"><code><div>Gmail ──poll──▶ whitelist ──match──▶ summarise ──▶ route ──▶ draft ──▶ file in Gmail
+                    │                  (LLM)      (LLM)     (LLM)          │
+                    └── no match ──▶ logged as &quot;skipped&quot;, nothing else     ▼
+                                                              shown in the side panel
+</div></code></pre>
+<hr>
+<h1 id="2-product-vision">2. Product Vision</h1>
+<h2 id="the-problem">The problem</h2>
+<p>A working inbox contains a small number of messages that genuinely need a reply,
+buried in a large number that do not. Two costs follow:</p>
+<ol>
+<li><strong>Reading cost.</strong> You re-read long threads to recover what is being asked.</li>
+<li><strong>Starting cost.</strong> Even a known reply is easier to edit than to begin.</li>
+</ol>
+<p>Existing &quot;AI email&quot; tools mostly attack this by putting a chat window next to
+your mail, which means you still do the work — you just do it in two places.</p>
+<h2 id="the-product-bet">The product bet</h2>
+<blockquote>
+<p><strong>The assistant should have already done the work by the time you look.</strong></p>
+</blockquote>
+<p>Not &quot;ask me to summarise this.&quot; Instead: by the time you open the thread, the
+summary exists and a draft reply is sitting in Gmail's own draft box, threaded
+under the conversation, waiting for your judgement.</p>
+<h2 id="principles">Principles</h2>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>What it means in this system</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Never send</strong></td>
+<td>The system's terminal action is <code>drafts.create</code>. There is no send path anywhere in the codebase. The <code>gmail.compose</code> scope permits drafting, not sending on your behalf.</td>
+</tr>
+<tr>
+<td><strong>Opt in, per sender</strong></td>
+<td>Nothing is processed unless its sender matches a whitelist rule you created. Silence is the default.</td>
+</tr>
+<tr>
+<td><strong>The user's mailbox is the source of truth</strong></td>
+<td>The draft lives in Gmail, not in our UI. Edit it where you will send it.</td>
+</tr>
+<tr>
+<td><strong>Credentials live in one place</strong></td>
+<td>Only the backend holds Google tokens. The extension can be reloaded, reinstalled or uninstalled without touching your Google account.</td>
+</tr>
+<tr>
+<td><strong>Explain, don't just act</strong></td>
+<td>Every processed email carries its summary, the template chosen, the provider used, and whether confidence was low. Every skipped email carries its reason.</td>
+</tr>
+<tr>
+<td><strong>Degrade, don't fail</strong></td>
+<td>A failing LLM falls back to a second provider, then to a static template. A failing Gmail call still leaves the generated text stored.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="who-it-is-for-mvp">Who it is for (MVP)</h2>
+<p>A <strong>single person</strong>, running the backend on their own machine, connecting
+<strong>one</strong> Gmail account, using Chrome. This is a demo/self-hosted product, not a
+multi-tenant service — see <a href="#10-limitations">10. Limitations</a>.</p>
+<hr>
+<h1 id="3-mvp-scope">3. MVP Scope</h1>
+<h2 id="-what-works-today">👤 What works today</h2>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connect one Gmail account by OAuth</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Automatically poll for new mail (default: every 60s)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Whitelist by exact email address or whole domain</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Add / edit / remove whitelist rules</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Quick-add the sender of the thread open in Gmail</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Bulk import whitelist from CSV or Excel</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>AI summary: overview, key points, action items, language</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>AI-written draft reply, in the language of the incoming mail</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Draft filed in Gmail, threaded under the original conversation</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Re-examine skipped mail after adding a rule (&quot;Rescan&quot;)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Emails you have replied to retire from the Inbox view</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Activity log with skip / failure reasons</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Dashboard: volume, matched vs unmatched, failures, top senders</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Badge count + desktop notification while the panel is closed</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Configure backend URL, background interval, notifications</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-what-is-deliberately-not-in-the-mvp">👤 What is deliberately <strong>not</strong> in the MVP</h2>
+<table>
+<thead>
+<tr>
+<th>Not included</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sending email</strong></td>
+<td>Out of scope by design, not by omission.</td>
+</tr>
+<tr>
+<td><strong>Multiple Gmail accounts</strong></td>
+<td><code>oauth_credentials.provider</code> is unique — connecting a second account replaces the first.</td>
+</tr>
+<tr>
+<td><strong>Multiple users / login</strong></td>
+<td>The backend has no authentication at all. It is a localhost tool.</td>
+</tr>
+<tr>
+<td><strong>Regenerating a draft on demand</strong></td>
+<td>The database supports draft versions; no endpoint or button exposes it.</td>
+</tr>
+<tr>
+<td><strong>Editing the draft inside the panel</strong></td>
+<td>The draft lives in Gmail; a second editable copy would invite editing the one that never gets sent.</td>
+</tr>
+<tr>
+<td><strong>&quot;Summarise everything, reply to some&quot;</strong></td>
+<td>The whitelist currently means both. One list, one meaning.</td>
+</tr>
+<tr>
+<td><strong>Custom reply templates</strong></td>
+<td>Three fixed templates: <code>TECH_SUPPORT</code>, <code>PRICING_INQUIRY</code>, <code>GENERAL_GREETING</code>.</td>
+</tr>
+<tr>
+<td><strong>Attachment understanding</strong></td>
+<td>Attachment metadata is carried; content is never analysed.</td>
+</tr>
+<tr>
+<td><strong>Deployment beyond localhost</strong></td>
+<td>See the security notes in <a href="#10-limitations">10. Limitations</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-mvp-boundary-conditions">🛠 MVP boundary conditions</h2>
+<ul>
+<li><strong>One backend process.</strong> The whitelist match cache is per-process; running
+<code>uvicorn --workers 2</code> makes caches diverge for up to 60 seconds.</li>
+<li><strong>One background worker task.</strong> A single asyncio loop drains retries, rescans
+and inbound mail in that order.</li>
+<li><strong>SQLite.</strong> <code>email_assistant.db</code> in <code>backend/</code>. Alembic migrations exist;
+local dev also auto-creates tables at startup.</li>
+<li><strong>Chrome 114+.</strong> <code>chrome.sidePanel</code> requires it.</li>
+</ul>
+<hr>
+<h1 id="4-system-architecture">4. System Architecture</h1>
+<h2 id="-component-diagram">🛠 Component diagram</h2>
+<pre class="hljs"><code><div>┌──────────────────────────────────────────────────────────────────────┐
+│  CHROME EXTENSION (Manifest V3)                                      │
+│  Holds no Google credentials. Requests no Gmail permissions.         │
+│                                                                      │
+│  ┌───────────────┐   ┌────────────────┐   ┌──────────────────────┐   │
+│  │ Content       │   │ Service Worker │   │ Side Panel (React)   │   │
+│  │ Script        │   │                │   │                      │   │
+│  │ mail.google   │   │ chrome.alarms  │   │ Inbox                │   │
+│  │  .com only    │   │ badge count    │   │ Dashboard            │   │
+│  │               │   │ notifications  │   │ Whitelist            │   │
+│  │ reads open    │   │ (fetch only —  │   │ Logs                 │   │
+│  │ thread sender │   │  no axios)     │   │ Settings             │   │
+│  └───────┬───────┘   └───────┬────────┘   └──────────┬───────────┘   │
+│          │ chrome.storage    │                       │               │
+│          └───────────────────┴───────────┬───────────┘               │
+└──────────────────────────────────────────┼───────────────────────────┘
+                                           │ REST + CORS
+                                           │ http://localhost:8000
+                     ┌─────────────────────▼──────────────────────────┐
+                     │  FastAPI BACKEND                               │
+                     │                                                │
+                     │  API layer   whitelist · inbox · logs ·        │
+                     │              dashboard · drafts · gmail-auth   │
+                     │  ─────────────────────────────────────────     │
+                     │  Workflow    AutoReplyWorkflow                 │
+                     │              background worker · retry queue   │
+                     │              rescan sweep                      │
+                     │  ─────────────────────────────────────────     │
+                     │  Tools       matcher · whitelist · bulk import │
+                     │              draft store · stats · log query   │
+                     │  ─────────────────────────────────────────     │
+                     │  AI          SummarizationService              │
+                     │              EmailOrchestrator + Drafter       │
+                     │  ─────────────────────────────────────────     │
+                     │  Proxy       Gmail client · poller · OAuth     │
+                     │  ─────────────────────────────────────────     │
+                     │  Storage     SQLAlchemy async → SQLite         │
+                     └───────┬──────────────────────────┬─────────────┘
+                             │ OAuth 2.0                │ HTTPS
+                             │ (server-side)            │
+                     ┌───────▼─────────┐      ┌─────────▼───────────┐
+                     │  GMAIL API      │      │  LLM PROVIDERS      │
+                     │  messages.list  │      │  Groq   (primary)   │
+                     │  messages.get   │      │  Gemini (fallback)  │
+                     │  drafts.create  │      │  mock   (no keys)   │
+                     └─────────────────┘      └─────────────────────┘
+</div></code></pre>
+<h2 id="-responsibility-split">🛠 Responsibility split</h2>
+<p>This is the single most important table in the document. Each row states who
+owns a concern, and — just as importantly — who does <strong>not</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Owner</th>
+<th>Explicitly <em>not</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google OAuth consent, token storage, token refresh</td>
+<td><strong>Backend</strong></td>
+<td>The extension never sees a token</td>
+</tr>
+<tr>
+<td>Discovering new mail</td>
+<td><strong>Backend</strong> (polls Gmail)</td>
+<td>The extension never calls Gmail's API</td>
+</tr>
+<tr>
+<td>Deciding whether an email is processed</td>
+<td><strong>Backend</strong> (<code>MatcherTool</code>)</td>
+<td>The LLM never sees the whitelist</td>
+</tr>
+<tr>
+<td>Reading and understanding email content</td>
+<td><strong>LLM</strong> (summarization)</td>
+<td>The backend does no NLP of its own</td>
+</tr>
+<tr>
+<td>Choosing a reply template</td>
+<td><strong>LLM</strong> (routing), validated by the backend</td>
+<td>The LLM's choice is schema-validated and confidence-gated</td>
+</tr>
+<tr>
+<td>Writing the reply text</td>
+<td><strong>LLM</strong> (compose), cleaned by the backend</td>
+<td>Falls back to a static template on any failure</td>
+</tr>
+<tr>
+<td>Creating the draft in the mailbox</td>
+<td><strong>Gmail API</strong>, called by the backend</td>
+<td>The extension has no <code>gmail.*</code> scope</td>
+</tr>
+<tr>
+<td>Threading the draft under the conversation</td>
+<td><strong>Backend</strong> (sets <code>threadId</code> + <code>In-Reply-To</code>/<code>References</code>)</td>
+<td>Gmail will not infer it</td>
+</tr>
+<tr>
+<td>Detecting that you replied</td>
+<td><strong>Backend</strong> (sweeps sent mail via Gmail API)</td>
+<td>Not the extension, and not only for AI-generated replies</td>
+</tr>
+<tr>
+<td>Rendering everything a human sees</td>
+<td><strong>Chrome Extension</strong></td>
+<td>The backend serves JSON, not HTML (one exception: the OAuth result page)</td>
+</tr>
+<tr>
+<td>Badge count, desktop notifications</td>
+<td><strong>Chrome Extension</strong> service worker</td>
+<td>Backend has no push channel</td>
+</tr>
+<tr>
+<td>Reading which Gmail thread is on screen</td>
+<td><strong>Chrome Extension</strong> content script</td>
+<td>Read-only; it never modifies Gmail's DOM</td>
+</tr>
+<tr>
+<td>Storing user preferences</td>
+<td><strong>Chrome Extension</strong> (<code>chrome.storage.local</code>)</td>
+<td>Not the backend — settings are per-device</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-technology-stack">🛠 Technology stack</h2>
+<p><strong>Backend</strong></p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Language</td>
+<td>Python ≥ 3.12</td>
+</tr>
+<tr>
+<td>Web framework</td>
+<td>FastAPI <code>0.2.0</code> app, served by Uvicorn</td>
+</tr>
+<tr>
+<td>ORM</td>
+<td>SQLAlchemy 2.x async + <code>aiosqlite</code></td>
+</tr>
+<tr>
+<td>Migrations</td>
+<td>Alembic (<code>0001</code>–<code>0005</code>)</td>
+</tr>
+<tr>
+<td>Config</td>
+<td><code>pydantic-settings</code>, single <code>Settings</code> object</td>
+</tr>
+<tr>
+<td>HTTP client</td>
+<td><code>httpx</code> (async) for Gmail</td>
+</tr>
+<tr>
+<td>LLM SDKs</td>
+<td><code>groq</code>, <code>google-genai</code></td>
+</tr>
+<tr>
+<td>Package manager</td>
+<td><code>uv</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Frontend</strong></p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Language</td>
+<td>TypeScript</td>
+</tr>
+<tr>
+<td>UI</td>
+<td>React 19</td>
+</tr>
+<tr>
+<td>Build</td>
+<td>Vite + <code>@crxjs/vite-plugin</code> (MV3 HMR)</td>
+</tr>
+<tr>
+<td>Styling</td>
+<td>TailwindCSS v4</td>
+</tr>
+<tr>
+<td>Server state</td>
+<td>TanStack Query</td>
+</tr>
+<tr>
+<td>UI state</td>
+<td>Zustand</td>
+</tr>
+<tr>
+<td>HTTP</td>
+<td><code>axios</code> in the panel, plain <code>fetch</code> in the service worker</td>
+</tr>
+<tr>
+<td>Node</td>
+<td>pinned to <strong>18.17.1</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="-runtime-topology">🛠 Runtime topology</h2>
+<p>Three independent clocks run at once. Confusing them is the most common source
+of &quot;why hasn't it updated yet&quot;.</p>
+<table>
+<thead>
+<tr>
+<th>Clock</th>
+<th>Where</th>
+<th>Default</th>
+<th>Controls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gmail poll</strong></td>
+<td>Backend worker</td>
+<td>60 s (<code>GMAIL_POLL_INTERVAL_SECONDS</code>)</td>
+<td>How fast new mail is <em>discovered</em>. Spends Gmail quota.</td>
+</tr>
+<tr>
+<td><strong>Panel refresh</strong></td>
+<td>Side panel, TanStack Query</td>
+<td>30 s</td>
+<td>How fast the open panel <em>shows</em> what the backend already has.</td>
+</tr>
+<tr>
+<td><strong>Background check</strong></td>
+<td>Service worker, <code>chrome.alarms</code></td>
+<td>5 min (floor 1 min)</td>
+<td>Badge + notification while the panel is closed.</td>
+</tr>
+</tbody>
+</table>
+<p>Worst-case latency from &quot;mail arrives&quot; to &quot;badge appears&quot; is therefore roughly
+one poll interval plus one alarm interval.</p>
+<hr>
+<h1 id="5-module-breakdown">5. Module Breakdown</h1>
+<h2 id="-backend-modules">🛠 Backend modules</h2>
+<hr>
+<h3 id="b1--configuration">B1 · Configuration</h3>
+<p><strong>Purpose</strong> — One typed, validated source of truth for every tunable value.</p>
+<p><strong>Responsibilities</strong></p>
+<ul>
+<li>Load <code>.env</code> into a <code>Settings</code> model with ranges enforced by Pydantic.</li>
+<li>Expose capability flags: <code>has_groq</code>, <code>has_gemini</code>, <code>has_google_oauth</code>.</li>
+<li>Cache the settings object (<code>@lru_cache</code>) so no module re-reads the file.</li>
+</ul>
+<p><strong>Features</strong> — Provider keys and models · summarizer tuning · confidence
+threshold · database URL · whitelist cache TTL · retry policy · rescan lookback
+· bulk import cap · Google OAuth client and scopes · Gmail polling parameters.</p>
+<p><strong>Inputs</strong> — <code>backend/.env</code>, process environment.
+<strong>Outputs</strong> — <code>Settings</code> instance via <code>get_settings()</code>.</p>
+<p><strong>Dependencies</strong> — <code>pydantic-settings</code>. Depends on nothing else in the project;
+everything else depends on it.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li>Missing Groq key → <code>has_groq</code> is False → routing silently uses the <strong>mock</strong>
+keyword router and drafting falls back to static templates. The pipeline still
+completes; the output is much worse. This is intentional (it lets the app run
+with zero keys) and is a common source of confusion.</li>
+<li><code>has_groq</code> requires <strong>both</strong> a key and a model name — there is no default
+model.</li>
+<li><code>@lru_cache</code> means changing <code>.env</code> requires a <strong>restart</strong>.</li>
+</ul>
+<p><strong>Future improvements</strong> — Surface capability flags on <code>/health</code> so the panel can
+warn &quot;no LLM configured&quot; instead of silently producing mock output.</p>
+<hr>
+<h3 id="b2--persistence">B2 · Persistence</h3>
+<p><strong>Purpose</strong> — Durable storage of rules, processing history, drafts and tokens.</p>
+<p><strong>Responsibilities</strong></p>
+<ul>
+<li>Define the ORM schema and the async session lifecycle.</li>
+<li>Provide repositories that encapsulate every query.</li>
+</ul>
+<p><strong>Features</strong> — Four tables:</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>whitelist_entries</code></td>
+<td><code>entry_type</code> (email/domain), <code>value</code>, <code>is_active</code>, audit columns. Unique on <code>(value, is_active)</code>.</td>
+</tr>
+<tr>
+<td><code>match_logs</code></td>
+<td>One row per inbound email ever seen: Gmail ids, sender, subject, matched rule, <code>status</code>, <code>retry_count</code>, <code>error_detail</code>, <code>processing_ms</code>, <code>summary_json</code>, <code>received_at</code>, <code>processed_at</code>, <code>replied_at</code>. Unique on <code>gmail_message_id</code>.</td>
+</tr>
+<tr>
+<td><code>generated_drafts</code></td>
+<td>Versioned draft text + <code>template_id</code>, <code>confidence_score</code>, <code>extracted_data</code>, <code>provider_used</code>, <code>used_fallback</code>, <code>gmail_draft_id</code>. Unique on <code>(match_log_id, version)</code>.</td>
+</tr>
+<tr>
+<td><code>oauth_credentials</code></td>
+<td>One row: access + refresh token, expiry, granted scopes, <code>last_polled_at</code>. Unique on <code>provider</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inputs</strong> — ORM operations from tools and the workflow.
+<strong>Outputs</strong> — Persisted rows; <code>AsyncSession</code> via <code>get_db()</code> (request scope) and
+<code>db_session()</code> (worker scope).</p>
+<p><strong>Dependencies</strong> — B1 (database URL), SQLAlchemy, aiosqlite.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li><strong>Soft delete.</strong> Deleting a whitelist rule sets <code>is_active=False</code>. Re-adding
+the same value <em>reactivates the original row</em> rather than creating a new one —
+&quot;delete then re-add&quot; is not a clean slate.</li>
+<li><code>summary_json</code> is null for rows that were skipped, failed before
+summarization, or predate the feature. Every reader must handle null.</li>
+<li><code>replied_at</code> is deliberately <strong>not</strong> an <code>ExecutionStatus</code> value: status records
+how <em>our processing</em> ended and must stay meaningful afterwards. Folding &quot;was
+replied to&quot; into the enum would overwrite the outcome and skew the dashboard.</li>
+<li>SQLite returns naive datetimes; the poller re-attaches UTC on read.</li>
+</ul>
+<p><strong>Future improvements</strong> — Encrypt tokens at rest · owner column on every table
+for multi-user · index review once volume grows.</p>
+<hr>
+<h3 id="b3--gmail-oauth">B3 · Gmail OAuth</h3>
+<p><strong>Purpose</strong> — Obtain and maintain permission to read the mailbox and create
+drafts.</p>
+<p><strong>Responsibilities</strong></p>
+<ul>
+<li>Build the Google authorization URL with a CSRF <code>state</code>.</li>
+<li>Exchange the authorization code for tokens; identify the account.</li>
+<li>Refresh the access token on demand; preserve the refresh token (Google only
+returns it on first consent).</li>
+<li>Revoke and delete on disconnect.</li>
+</ul>
+<p><strong>Features</strong> — <code>GET /api/v1/gmail/auth/start</code> (307 to Google) ·
+<code>GET …/callback</code> (renders a human-readable HTML result page, not JSON) ·
+<code>GET …/status</code> · <code>DELETE /api/v1/gmail/auth/</code>.</p>
+<p><strong>Inputs</strong> — <code>GOOGLE_CLIENT_ID</code>, <code>GOOGLE_CLIENT_SECRET</code>, <code>GOOGLE_REDIRECT_URI</code>,
+the code and state returned by Google.
+<strong>Outputs</strong> — A persisted <code>OAuthCredential</code>; a valid access token on request;
+a status object consumed by the Settings panel.</p>
+<p><strong>Scopes requested</strong> — <code>gmail.readonly</code> (poll) · <code>gmail.compose</code> (draft) ·
+<code>userinfo.email</code> (name the connected account). Both Gmail scopes are classified
+<em>sensitive</em> by Google.</p>
+<p><strong>Dependencies</strong> — B1, B2, <code>httpx</code>, Google's OAuth endpoints.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li>OAuth client must be type <strong>Web application</strong>; Google blocks the loopback flow
+Desktop clients use.</li>
+<li>The redirect URI must match <em>exactly</em>, including port — which is why the
+backend must stay on <strong>8000</strong>.</li>
+<li>Consent screen in <strong>Testing</strong> mode shows an &quot;unverified app&quot; warning; expected.</li>
+<li><code>state</code> is single-use; a replayed or expired callback renders an explanatory
+error page rather than a stack trace.</li>
+<li>Connecting a second account <strong>replaces</strong> the first (unique <code>provider</code>).</li>
+<li>A revoked token surfaces as a 401 during polling, recorded in
+<code>poller.last_error</code>.</li>
+</ul>
+<p><strong>Future improvements</strong> — Token encryption · explicit re-consent prompt when
+scopes change · support for more than one connected account.</p>
+<hr>
+<h3 id="b4--gmail-client--poller">B4 · Gmail Client &amp; Poller</h3>
+<p><strong>Purpose</strong> — All I/O with the Gmail API, and the loop that discovers new mail.</p>
+<p><strong>Responsibilities</strong></p>
+<ul>
+<li><code>list_message_ids</code> / <code>get_message</code> / <code>list_sent_thread_ids</code> / <code>create_draft</code>.</li>
+<li>Parse Gmail's payload into an internal <code>InboundEmailEvent</code> (decode base64url
+bodies, walk MIME parts, extract headers, resolve <code>received_at</code>).</li>
+<li>Build the reply MIME, including threading headers.</li>
+<li>Poll on an interval, buffer results, advance the watermark, detect replies.</li>
+</ul>
+<p><strong>Features</strong></p>
+<ul>
+<li><strong>Interval polling</strong> with an in-memory buffer: the worker calls <code>receive()</code> in
+a tight loop, so serving from a buffer is what keeps Gmail quota alive.</li>
+<li><strong>Watermark</strong> (<code>last_polled_at</code>) captured <em>before</em> the fetch, so a message
+arriving mid-poll is caught next time rather than lost.</li>
+<li><strong>First-poll lookback</strong> bounded to <code>GMAIL_INITIAL_LOOKBACK_MINUTES</code> (60) so
+connecting an account does not draft replies to a month of history.</li>
+<li><strong>Reply sweep</strong>: lists sent threads since the watermark and stamps
+<code>replied_at</code> on matching logs. Works for hand-typed replies too.</li>
+<li><strong>Backoff</strong>: retryable failure → 2× interval; non-retryable → 10×; no account
+connected → at least 60 s.</li>
+</ul>
+<p><strong>Inputs</strong> — A valid access token; <code>GMAIL_POLL_QUERY</code> (default
+<code>in:inbox -in:chats</code>); <code>GMAIL_MAX_RESULTS_PER_POLL</code> (25).
+<strong>Outputs</strong> — <code>InboundEmailEvent</code> objects; a created draft id; a <code>status</code> dict
+(<code>connected</code>, <code>buffered</code>, <code>next_poll_at</code>, <code>last_error</code>) surfaced in Settings.</p>
+<p><strong>Dependencies</strong> — B1, B2, B3, <code>httpx</code>.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li>One unreadable message must not stall the batch — fetch failures are logged
+and skipped.</li>
+<li>Messages are processed <strong>oldest first</strong> (<code>reversed(message_ids)</code>).</li>
+<li>Without <code>threadId</code> <strong>and</strong> <code>In-Reply-To</code>/<code>References</code>, Gmail files the draft as
+a brand-new conversation, which looks broken. Both are set.</li>
+<li>The reply sweep swallows all its errors: it is bookkeeping, and letting it
+abort a poll would stop new mail being fetched.</li>
+<li>Gmail has <strong>no working deep link to an individual draft</strong>, which is why the UI
+links to the <em>thread</em> instead.</li>
+</ul>
+<p><strong>Future improvements</strong> — Gmail push notifications (<code>users.watch</code> + Pub/Sub)
+instead of polling · per-label filtering · richer quota/backoff telemetry.</p>
+<hr>
+<h3 id="b5--whitelist">B5 · Whitelist</h3>
+<p><strong>Purpose</strong> — Decide, cheaply and predictably, whether an email is processed.</p>
+<p><strong>Responsibilities</strong></p>
+<ul>
+<li>Validate and normalise rule values; infer type from a leading <code>@</code>.</li>
+<li>CRUD with soft delete and duplicate detection.</li>
+<li>Match a sender against active rules, with a TTL cache.</li>
+<li>Bulk import from CSV/Excel with a per-row report.</li>
+</ul>
+<p><strong>Features</strong></p>
+<ul>
+<li><strong>Type inference</strong>: <code>alice@x.com</code> → exact email rule; <code>@x.com</code> → whole-domain
+rule. There is no type dropdown anywhere in the product.</li>
+<li><strong>Precedence</strong>: exact email <strong>always</strong> beats domain. No tie-breaker is needed
+— uniqueness on <code>(value, is_active)</code> means a sender matches at most one rule
+of each kind.</li>
+<li><strong>Cache</strong>: entries held in memory for <code>WHITELIST_CACHE_TTL_SECONDS</code> (60),
+invalidated on every write.</li>
+<li><strong>Import</strong>: <code>value</code> column required; unknown columns (notably a legacy
+<code>priority</code>) are ignored rather than rejected, so old files still import.
+<code>row_index</code> is 1-based <em>including</em> the header, so it maps to spreadsheet row
+numbers.</li>
+</ul>
+<p><strong>Inputs</strong> — <code>POST/PUT</code> bodies; an uploaded CSV/XLSX; a raw sender address.
+<strong>Outputs</strong> — <code>WhitelistEntry</code> rows; a <code>MatchResult</code> (<code>entry</code>, <code>matched_rule</code>,
+<code>match_type</code>); a <code>BulkImportReport</code> (<code>total_rows</code>, <code>inserted</code>,
+<code>skipped_duplicates</code>, <code>validation_errors[]</code>, <code>warnings[]</code>).</p>
+<p><strong>Dependencies</strong> — B1, B2, guardrails.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li><code>PUT</code> with an empty body → <strong>400</strong> (<code>exclude_unset</code>).</li>
+<li>Editing a value <strong>re-infers the type</strong> — changing <code>bob@x.com</code> to <code>@x.com</code>
+silently widens one address into an entire company. The UI warns live.</li>
+<li>Duplicate → <strong>409</strong>; invalid → <strong>422</strong>. Both messages are written for humans
+and are safe to display verbatim.</li>
+<li>A rule added now does <strong>not</strong> retroactively apply — see B6 (rescan).</li>
+<li>Cache staleness means a new rule can take up to 60 s to take effect.</li>
+</ul>
+<p><strong>Future improvements</strong> — Split the single flag into <code>summarize</code> and
+<code>auto_draft</code> booleans (the two sets genuinely diverge — you would summarise your
+boss but never auto-reply to them) · shared cache (Redis) for multi-worker ·
+wildcard/subdomain rules · export.</p>
+<hr>
+<h3 id="b6--autoreply-workflow">B6 · AutoReply Workflow</h3>
+<p><strong>Purpose</strong> — The end-to-end pipeline for a single inbound email. This is the
+heart of the system.</p>
+<p><strong>Responsibilities</strong> — Sanitize → deduplicate → log → match → summarise → draft
+→ persist → file in Gmail → mark complete. Plus retry and rescan variants.</p>
+<p><strong>Features</strong></p>
+<p><code>process_initial(event)</code>:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Step</th>
+<th>On failure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>sanitize_sender</code> — parse <code>Name &lt;addr&gt;</code></td>
+<td>Return <code>None</code>; nothing logged</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Idempotency check on <code>gmail_message_id</code></td>
+<td>Return the existing log id</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Create <code>MatchLog</code> (status <code>PENDING</code>)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>MatcherTool.match</code></td>
+<td>No match → <code>SKIPPED</code>, reason recorded, <strong>stop</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Status → <code>PROCESSING</code>, record matched rule</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>_execute_core</code></td>
+<td>See below</td>
+</tr>
+</tbody>
+</table>
+<p><code>_execute_core</code>:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Step</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>LLMAdapter.generate_draft</code> → summary + draft</td>
+<td>3 LLM calls (see B7/B8)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Persist <code>summary_json</code> <strong>first</strong></td>
+<td>Before anything else can fail</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Store <code>GeneratedDraft</code></td>
+<td>The expensive artefact, secured</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>create_draft</code> in Gmail, store <code>gmail_draft_id</code></td>
+<td><strong>Errors swallowed</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Status → <code>COMPLETED</code>, record <code>processing_ms</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><code>process_rescan(log_id)</code> — re-examines a <code>SKIPPED</code> log against the <em>current</em>
+whitelist. The body is not stored on the log, so the message is <strong>re-fetched
+from Gmail</strong>; a rescan therefore needs a connected account and cannot recover
+mail Gmail no longer has.</p>
+<p><code>process_retry(log_id, event)</code> — increments <code>retry_count</code> and re-runs the core.</p>
+<p><strong>Background worker</strong> — one asyncio task, draining in strict order:
+retries → rescan (if requested) → pushed mail → polled mail → sleep 0.5 s.
+Retry backoff is exponential: <code>AUTO_REPLY_RETRY_DELAY_SECONDS × 2^(attempt-1)</code>,
+capped at <code>AUTO_REPLY_MAX_RETRIES</code> (3).</p>
+<p><strong>Rescan trigger</strong> — a boolean flag, set <strong>only</strong> by
+<code>POST /api/v1/whitelist/rescan</code>. Whitelist writes deliberately do not set it: a
+sweep re-fetches from Gmail, spends LLM calls and files real drafts, which is
+far too much to happen as a side effect of typing an address into a form — and a
+bulk import of 300 rules would fire it against the whole lookback window at once.
+Repeated clicks collapse into one sweep, and the sweep re-reads rules when it
+actually runs.</p>
+<p><strong>Inputs</strong> — <code>InboundEmailEvent</code> (from the poller or the push endpoint).
+<strong>Outputs</strong> — Rows in <code>match_logs</code> and <code>generated_drafts</code>; a draft in Gmail.</p>
+<p><strong>Dependencies</strong> — B2, B4, B5, B7, B8.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li><strong>Ordering matters.</strong> Summary is persisted before the draft is stored, and the
+draft is stored before Gmail is called. A Gmail outage leaves a completed row
+with no draft link rather than dragging an already-paid-for LLM result through
+the retry queue.</li>
+<li><strong>Emails with no readable body</strong> raise a non-retryable
+<code>InvalidEmailContentError</code> and land as <code>FAILED</code>. Image-only mail, calendar
+invites and some HTML newsletters hit this; a live inbox will show red rows.</li>
+<li>Disconnecting mid-run: buffered mail still processes, but draft filing is
+skipped with <code>gmail_draft_id = null</code>.</li>
+<li>A rescan that raises leaves the log in <code>PROCESSING</code>, so the next sweep will not
+re-pick it (only <code>SKIPPED</code> is eligible).</li>
+</ul>
+<p><strong>Future improvements</strong> — <code>POST /logs/{id}/regenerate</code> (versioning already
+exists) · reclassify body-less mail as <code>SKIPPED</code> rather than <code>FAILED</code> · a real
+<code>rate_limited</code> status (the dashboard field exists but can never be set today) ·
+durable retry queue that survives restart.</p>
+<hr>
+<h3 id="b7--summarization">B7 · Summarization</h3>
+<p><strong>Purpose</strong> — Turn an email (or thread) into provider-neutral, source-cited
+structured context. It never retrieves, changes, sends or stores email.</p>
+<p><strong>Responsibilities</strong> — Normalise and truncate input · call the primary provider
+with one retry · fall back to a second provider once · validate that every
+citation refers to a message actually processed.</p>
+<p><strong>Features</strong> — <code>SummarizationResult</code>: <code>overview</code>, up to <strong>7</strong> cited
+<code>key_points</code>, up to 20 <code>action_items</code> (task/owner/deadline), detected
+<code>language</code>, plus <code>request_id</code>, <code>source_message_ids</code>, <code>omitted_message_ids</code>,
+<code>truncated</code>.</p>
+<p>Provider order: <strong>Groq → Gemini</strong>. A Groq-only configuration is valid.</p>
+<p><strong>Inputs</strong> — <code>SummarizationRequest</code> (1–100 messages; multiple messages must
+share one non-empty <code>thread_id</code>; every message needs a non-empty text or HTML
+body).
+<strong>Outputs</strong> — <code>SummarizationResult</code>, or a typed <code>SummarizationError</code> carrying
+<code>code</code>, <code>safe_message</code>, <code>retryable</code> and an HTTP status.</p>
+<p><strong>Dependencies</strong> — B1, provider SDKs. <strong>Depends on nothing else in the app</strong> —
+it is reusable and directly exposed as <code>POST /api/v1/summaries</code>.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li>Input over <code>SUMMARIZER_MAX_NORMALIZED_CHARS</code> (100k) or
+<code>SUMMARIZER_MAX_MESSAGES</code> (20) is truncated; <code>truncated: true</code> and
+<code>omitted_message_ids</code> say so, and the UI shows a badge.</li>
+<li>A model citing a message id it was not given is rejected as invalid output —
+this is the anti-hallucination guard.</li>
+<li>Configuration and content-rejection errors are <strong>not</strong> retried.</li>
+<li><code>language</code> is the language of the <em>original email</em>. The summary prose itself
+is not guaranteed to be in that language.</li>
+</ul>
+<p><strong>Future improvements</strong> — Stream partial summaries · attachment text extraction
+· per-provider cost/latency telemetry.</p>
+<hr>
+<h3 id="b8--orchestrator--drafting">B8 · Orchestrator &amp; Drafting</h3>
+<p><strong>Purpose</strong> — Decide what <em>kind</em> of reply this is, then write it.</p>
+<p><strong>Responsibilities</strong></p>
+<ul>
+<li>Build a routing prompt from the template catalog and a JSON schema.</li>
+<li>Call the LLM for routing (<strong>Groq → Gemini → mock</strong>).</li>
+<li>Validate the result against <code>EmailRoutingSchema</code>; degrade on low confidence.</li>
+<li>Delegate text generation to a <code>Drafter</code>.</li>
+</ul>
+<p><strong>Features</strong></p>
+<p><em>Routing</em> returns <code>template_id</code>, <code>extracted_data</code>, <code>confidence_score</code>. Two
+degradation paths, both setting <code>used_fallback: true</code>:</p>
+<ol>
+<li>Schema validation fails → <code>GENERAL_GREETING</code>, confidence <code>0.0</code>.</li>
+<li>Confidence below <code>CONFIDENCE_THRESHOLD</code> (<strong>0.6</strong>) → <code>GENERAL_GREETING</code>.</li>
+</ol>
+<p><em>Drafting</em> — two implementations behind one <code>Drafter</code> protocol:</p>
+<table>
+<thead>
+<tr>
+<th>Implementation</th>
+<th>When</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LLMDrafter</code></td>
+<td>Any API key configured</td>
+<td>A real reply, written in <code>summary.language</code>, 3–6 sentences</td>
+</tr>
+<tr>
+<td><code>TemplateRenderDrafter</code></td>
+<td>No keys, or <code>LLMDrafter</code> threw</td>
+<td>One fixed Jinja2 sentence per template</td>
+</tr>
+</tbody>
+</table>
+<p><code>LLMDrafter</code> is instructed to invent no facts, respond only to what the summary
+contains, and <strong>not</strong> sign off — the user adds their own signature. Post-
+processing strips code fences, preambles (&quot;Sure, here is…&quot;), <code>Subject:</code> lines,
+sign-offs and <code>[Your name]</code> placeholders.</p>
+<p><strong>Inputs</strong> — <code>SummarizationResult</code>.
+<strong>Outputs</strong> — <code>DraftResult</code> (<code>draft_text</code>, <code>template_id</code>, <code>confidence_score</code>,
+<code>extracted_data</code>, <code>provider_used</code>, <code>used_fallback</code>).</p>
+<p><strong>Dependencies</strong> — B1, B7's models, <code>email_module</code> (template catalog + schema).</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li><strong><code>mock</code> provider.</strong> With no keys at all, routing uses a Vietnamese/English
+keyword matcher that reports a hardcoded confidence of <code>0.85</code> — high enough to
+pass the threshold. Useful for frontend work; misleading in a demo.</li>
+<li><code>compose()</code> has <strong>no</strong> mock: with no provider, <code>LLMDrafter</code> falls through to
+the static template. A real canned sentence beats an invented fake draft.</li>
+<li><code>LLMDrafter</code> catches <strong>every</strong> exception. There is always a draft; an email is
+never marked <code>FAILED</code> because the writing step failed.</li>
+<li>The three templates and the drafting system prompt are written in Vietnamese.
+The LLM-written draft follows <code>summary.language</code>, but the <strong>static fallback is
+Vietnamese only</strong> — an English email that falls back gets a Vietnamese
+sentence.</li>
+<li><code>run()</code> is synchronous and makes two blocking network calls, so the workflow
+dispatches it via <code>asyncio.to_thread</code>; calling it directly would freeze the
+event loop the API shares.</li>
+</ul>
+<p><strong>Cost</strong> — per whitelisted email, with keys configured: <strong>3 LLM calls</strong>
+(summarise, route, compose). Senders matching no rule cost <strong>zero</strong>.</p>
+<p><strong>Future improvements</strong> — User-defined templates · per-sender tone · a
+confidence signal from the drafting step, not just routing · translate the
+static templates.</p>
+<hr>
+<h3 id="b9--read-apis">B9 · Read APIs</h3>
+<p><strong>Purpose</strong> — Serve everything the panel renders.</p>
+<p><strong>Responsibilities</strong> — Query, paginate and shape <code>match_logs</code>,
+<code>generated_drafts</code> and aggregate statistics.</p>
+<p><strong>Features</strong></p>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /api/v1/auto-reply/inbox</code></td>
+<td>Log + summary + latest draft <strong>in one response</strong>. <code>since</code>, <code>page</code>, <code>page_size</code> (≤100), <code>include_skipped</code> (default false), <code>include_replied</code> (default false). Uses <code>selectinload</code> — one extra query for the page, not one per row.</td>
+</tr>
+<tr>
+<td><code>GET /api/v1/auto-reply/logs</code></td>
+<td>Filters: <code>sender_filter</code>, <code>status_filter</code>, <code>date_from</code>, <code>date_to</code>.</td>
+</tr>
+<tr>
+<td><code>GET /api/v1/auto-reply/status/{log_id}</code></td>
+<td>Status, <code>retry_count</code>, <code>error_detail</code>, <code>processing_ms</code>.</td>
+</tr>
+<tr>
+<td><code>GET /api/v1/auto-reply/drafts/{draft_id}</code></td>
+<td>One draft.</td>
+</tr>
+<tr>
+<td><code>GET /api/v1/auto-reply/logs/{log_id}/drafts</code></td>
+<td>Version history, oldest first.</td>
+</tr>
+<tr>
+<td><code>GET /api/v1/auto-reply/dashboard/summary</code></td>
+<td><code>since_hours</code> (1–8760, default 24).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dashboard fields</strong> — <code>total_inbound_emails</code>, <code>matched_whitelist</code>, <code>unmatched</code>,
+<code>total_drafts_generated</code>, <code>failed_generation</code>, <code>avg_processing_ms</code>,
+<code>status_breakdown</code>, <code>active_whitelist_entries</code>, <code>top_senders[]</code>.</p>
+<p><strong>Inputs</strong> — Query parameters. <strong>Outputs</strong> — JSON.</p>
+<p><strong>Dependencies</strong> — B2.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li>Every figure answers <em>&quot;what happened in this window&quot;</em>, never <em>&quot;what would
+today's rules do&quot;</em>. Top senders is filtered on the FK alone, matching
+<code>matched_whitelist</code> by construction — an earlier version required
+<code>is_active</code>, so deactivating a rule erased its sender from the chart while
+Matched kept counting, and the panel contradicted itself permanently.</li>
+<li><code>status_breakdown.rate_limited</code> is <strong>dead</strong>: <code>ExecutionStatus</code> has no such
+member, so it is always <code>0</code>.</li>
+<li>The inbox total is counted before pagination, so paging is honest.</li>
+<li>Timestamps read back from SQLite are naive; <code>since</code>/<code>until</code> on the dashboard
+are offset-aware because Python builds them. The client parses both.</li>
+</ul>
+<p><strong>Future improvements</strong> — A <code>summarized</code> count · true SQL <code>COUNT</code> on inbox
+(currently materialised in Python) · cursor pagination.</p>
+<hr>
+<h2 id="-frontend-modules">🛠 Frontend modules</h2>
+<hr>
+<h3 id="f1--side-panel-shell">F1 · Side Panel Shell</h3>
+<p><strong>Purpose</strong> — The app frame: header, tabs, panel switching, gating.</p>
+<p><strong>Responsibilities</strong> — Mount React and TanStack Query · hold UI state in
+Zustand · hydrate settings from <code>chrome.storage</code> once at boot · gate all four
+tabs behind a connected Gmail account.</p>
+<p><strong>Features</strong> — Tabs: <strong>Inbox</strong> (default) · Dashboard · Whitelist · Logs, plus a
+Settings view reachable from the header. Tabs are <strong>hidden</strong> until an account is
+connected (behind the gate they all lead to the same connect screen). Settings
+stays reachable regardless, because the backend URL may need fixing before
+connecting is even possible.</p>
+<p><strong>Inputs</strong> — <code>chrome.storage.local</code>; auth status from the backend.
+<strong>Outputs</strong> — Rendered UI.</p>
+<p><strong>Dependencies</strong> — F6, all feature modules.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li>Panels are keyed so switching remounts rather than reusing state across two
+unrelated views; inactive panels unmount, which also stops their polling.</li>
+<li>The side panel unmounts when closed, so the in-memory query cache dies with
+it. The refetch on reopen is accepted for the MVP.</li>
+</ul>
+<p><strong>Future improvements</strong> — Persisted query cache (only if reopen latency becomes
+a real complaint) · deep-linking to a specific log.</p>
+<hr>
+<h3 id="f2--inbox">F2 · Inbox</h3>
+<p><strong>Purpose</strong> — The product's centre: what arrived, what it said, what to reply.</p>
+<p><strong>Responsibilities</strong> — List processed emails, expand to show the summary,
+confirm a draft exists, link into Gmail, advance the &quot;seen&quot; watermark.</p>
+<p><strong>Features</strong> — <code>EmailCard</code> (sender, subject, time) → expands to <code>SummaryView</code>
+(overview, language badge, truncation badge, key points, action items) and
+<code>DraftSection</code> (template id, provider badge, version badge, <strong>Check draft</strong>
+button). Paginated at 25. Polls every 30 s. Viewing the tab clears the badge.</p>
+<p><strong>Inputs</strong> — <code>GET /auto-reply/inbox</code>.
+<strong>Outputs</strong> — A Gmail tab opened at the thread.</p>
+<p><strong>Dependencies</strong> — F6, B9.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li><strong>The draft text is deliberately not rendered.</strong> It lives in Gmail as a real
+draft; showing a second copy invites editing the one that never gets sent.</li>
+<li><code>gmail_draft_id === null</code> → an explicit amber notice: the reply <em>was</em>
+generated and stored, only the filing failed. Saying &quot;no draft&quot; would be
+wrong; saying nothing would leave a button that goes nowhere useful.</li>
+<li>Summary may be null (skipped, failed early, or an old row).</li>
+<li>Skipped and already-replied emails are excluded by default — Logs shows them.</li>
+</ul>
+<p><strong>Future improvements</strong> — Regenerate button · inline &quot;why this template&quot; ·
+filter by sender.</p>
+<hr>
+<h3 id="f3--whitelist">F3 · Whitelist</h3>
+<p><strong>Purpose</strong> — Manage the rules that decide what gets processed.</p>
+<p><strong>Responsibilities</strong> — Quick add with live type inference · inline edit ·
+delete · CSV/Excel import with a results panel · suggest the sender of the
+thread currently open in Gmail · trigger a rescan.</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><strong>One input, no dropdown.</strong> Typing <code>@fpt.edu.vn</code> shows <em>&quot;Domain rule — matches
+everyone at fpt.edu.vn&quot;</em> <strong>before</strong> submitting, not after a whole department
+starts getting automatic replies.</li>
+<li><strong>Quick-add suggestion</strong> from the content script, shown only when the field is
+empty. Clicking it <em>fills</em> the field rather than submitting, so inference and
+guardrail feedback are visible first.</li>
+<li><strong>Import</strong> renders a per-row report (a toast cannot carry it).</li>
+</ul>
+<p><strong>Inputs</strong> — Typed values, uploaded files, <code>chrome.storage</code> sender capture.
+<strong>Outputs</strong> — Whitelist mutations; a rescan request.</p>
+<p><strong>Dependencies</strong> — F6, F7, B5, B6.</p>
+<p><strong>Edge cases</strong> — 409/422 messages are shown verbatim · a rejected value stays in
+the field so it can be corrected rather than retyped · no Restore button and no
+trash view, because delete is soft with no restore endpoint · widening warning
+on edit.</p>
+<p><strong>Future improvements</strong> — Downloadable CSV template · bulk delete · search.</p>
+<hr>
+<h3 id="f4--logs">F4 · Logs</h3>
+<p><strong>Purpose</strong> — Answer &quot;what happened to this email, and why?&quot;</p>
+<p><strong>Responsibilities</strong> — Paginated, filterable history of every inbound email.</p>
+<p><strong>Features</strong> — Status filter tabs (all / completed / failed / skipped) · sender
+and date filters · per-row status, matched rule, error detail, processing time.</p>
+<p><strong>Inputs</strong> — <code>GET /auto-reply/logs</code>.
+<strong>Outputs</strong> — Read-only display.</p>
+<p><strong>Dependencies</strong> — F6, B9.</p>
+<p><strong>Edge cases</strong> — The response omits <code>sender_name</code>, <code>gmail_thread_id</code> and
+<code>retry_count</code> that exist on the model, so the list shows raw addresses and
+retry count needs the per-log status endpoint.</p>
+<p><strong>Future improvements</strong> — Expose the omitted fields · export · link a log row to
+its inbox card.</p>
+<hr>
+<h3 id="f5--dashboard--settings">F5 · Dashboard &amp; Settings</h3>
+<p><strong>Dashboard purpose</strong> — Is the system working, and how much is it doing?</p>
+<p><strong>Features</strong> — Stat cards (inbound, matched, drafts, failed, average processing
+time) · status breakdown bar · top senders · time-window filter (hours).</p>
+<p><strong>Settings purpose</strong> — Everything device-local, plus the Gmail connection.</p>
+<p><strong>Features</strong> — Gmail connect/disconnect with live status · backend URL with a
+<strong>Test</strong> button that pings <code>/health</code> · background interval (1/5/15/30 min) ·
+notifications toggle · reset to defaults · extension version.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li>The Test button uses a raw <code>fetch</code> against the <em>draft</em> URL — the shared client
+reads the saved one, which is not what is being tested.</li>
+<li>Pointing at any origin outside <code>localhost:8000</code> / <code>127.0.0.1:8000</code> fails as an
+opaque network error because the manifest does not grant it. The panel warns
+explicitly rather than letting someone debug a dead app.</li>
+<li>Saving a new backend URL <strong>clears</strong> the query cache: the data is not stale, it
+is from somewhere else.</li>
+</ul>
+<p><strong>Future improvements</strong> — Surface backend config (poll interval, threshold) ·
+show <code>poller.last_error</code> prominently.</p>
+<hr>
+<h3 id="f6--service-layer">F6 · Service Layer</h3>
+<p><strong>Purpose</strong> — One typed, normalised boundary between UI and backend.</p>
+<p><strong>Responsibilities</strong> — HTTP clients · error normalisation · query keys ·
+hand-mirrored types.</p>
+<p><strong>Features</strong></p>
+<ul>
+<li><code>http.ts</code> (axios) for the panel; <code>fetchClient.ts</code> (fetch) for the worker.</li>
+<li><strong>The backend returns two error shapes</strong> — <code>{request_id, code, message, retryable}</code> from summarization/routing, and <code>{detail}</code> from FastAPI's
+<code>HTTPException</code>. Both are normalised into one <code>ApiError</code>; neither raw shape
+ever reaches a component.</li>
+<li>Retry policy is driven by the backend's own <code>retryable</code> flag rather than an
+invented client-side rule.</li>
+<li><code>services/api/</code> mirrors backend routers <strong>1:1</strong>, so adding auth later means
+touching one interceptor rather than thirty components.</li>
+</ul>
+<p><strong>Edge cases</strong> — Types in <code>types/api.ts</code> are <em>assertions</em>, not validations;
+nothing checks at runtime that a response matches. Each block names the Python
+source it mirrors so the two can be diffed.</p>
+<p><strong>Future improvements</strong> — Generate types from the OpenAPI schema · runtime
+validation at the boundary.</p>
+<hr>
+<h3 id="f7--service-worker--content-script">F7 · Service Worker &amp; Content Script</h3>
+<p><strong>Service worker purpose</strong> — Keep the user informed while the panel is closed.</p>
+<p><strong>Features</strong> — <code>chrome.alarms</code> poll · badge count · desktop notification on an
+<em>increase</em> only (a persisted high-water mark stops every poll re-announcing the
+same backlog) · re-reads settings when they change.</p>
+<p><strong>Content script purpose</strong> — Notice which Gmail thread is open, so its sender
+can be quick-added.</p>
+<p><strong>Features</strong> — Four sender-detection strategies tried in order (most to least
+durable), debounced 400 ms behind a <code>MutationObserver</code>. Reads only the message
+<em>header</em> region — a body frequently quotes other addresses, and whitelisting the
+wrong person is a silent, consequential mistake. Retracts the capture on leaving
+a thread or the page.</p>
+<p><strong>Inputs</strong> — Alarms; Gmail's DOM. <strong>Outputs</strong> — Badge, notifications,
+<code>chrome.storage</code> sender capture.</p>
+<p><strong>Edge cases</strong></p>
+<ul>
+<li><strong>No axios in the worker</strong> — its browser build needs <code>XMLHttpRequest</code>, absent
+in service workers.</li>
+<li><strong>No <code>setInterval</code> and no module state</strong> — the worker is torn down after ~30 s
+idle; every top-level statement re-runs on wake and must be idempotent.</li>
+<li>Chrome silently clamps alarms below one minute.</li>
+<li>A failed poll leaves the badge alone; clearing it would claim there is nothing
+new, which is not what we know.</li>
+<li><strong>Gmail's DOM is undocumented and changes without notice.</strong> Every selector is
+an observed pattern, not a contract. When quick-add stops finding senders,
+<code>readSender.ts</code> is the file to fix.</li>
+</ul>
+<p><strong>Permissions</strong> — <code>storage</code>, <code>sidePanel</code>, <code>alarms</code>, <code>notifications</code>, plus host
+access to <code>localhost:8000</code> / <code>127.0.0.1:8000</code>. Deliberately <strong>no</strong> <code>tabs</code>
+permission: &quot;Check draft&quot; uses <code>window.open</code>, whereas reusing the open Gmail tab
+would force every installed user to re-approve a &quot;Read your browsing history&quot;
+warning on update.</p>
+<p><strong>Future improvements</strong> — Resilience tests against captured Gmail DOM snapshots
+· notification click → open the panel on that email.</p>
+<hr>
+<h1 id="6-feature-specifications">6. Feature Specifications</h1>
+<h2 id="-f-01--connect-your-gmail-account">👤 F-01 · Connect your Gmail account</h2>
+<p><strong>What it does</strong> — Grants the backend permission to read your inbox and create
+drafts in it.</p>
+<p><strong>How to use it</strong> — Side panel → ⚙ Settings → <strong>Connect Gmail</strong>. A Google
+consent tab opens; approve it and close the tab. The panel then shows
+<strong>Connected</strong> with your address.</p>
+<p><strong>What you should know</strong></p>
+<ul>
+<li>You are granting access to the <strong>backend running on your machine</strong>, not to the
+extension. The extension asks for no Gmail permissions at all.</li>
+<li>In Testing mode Google shows an &quot;unverified app&quot; warning. Choose
+<strong>Advanced → Go to AI Email Assistant (unsafe)</strong>.</li>
+<li>Only the last 60 minutes of mail is considered on first connect — connecting
+will not draft replies to a month of history.</li>
+<li>You can revoke access at any time, independently, at
+<a href="https://myaccount.google.com/permissions">https://myaccount.google.com/permissions</a>.</li>
+</ul>
+<hr>
+<h2 id="-f-02--whitelist-a-sender">👤 F-02 · Whitelist a sender</h2>
+<p><strong>What it does</strong> — Tells the assistant which senders to process. Everything else
+is ignored.</p>
+<p><strong>How to use it</strong> — Whitelist tab → type an address or a domain → <strong>Add</strong>.</p>
+<ul>
+<li><code>alice@company.com</code> → just Alice.</li>
+<li><code>@company.com</code> → <strong>everyone</strong> at company.com.</li>
+</ul>
+<p>The panel tells you which one you are about to create, before you press Add.</p>
+<p><strong>What you should know</strong></p>
+<ul>
+<li>If a thread is open in Gmail, its sender is offered as a one-click suggestion.</li>
+<li>An exact address always wins over a domain rule.</li>
+<li>A new rule can take up to a minute to take effect.</li>
+<li>A new rule does <strong>not</strong> automatically apply to mail that already arrived —
+use <strong>Rescan</strong> (F-06).</li>
+</ul>
+<hr>
+<h2 id="-f-03--automatic-summary-and-draft">👤 F-03 · Automatic summary and draft</h2>
+<p><strong>What it does</strong> — For each new email from a whitelisted sender, the assistant
+reads it, writes a reply, and files that reply as a Gmail draft on the same
+conversation.</p>
+<p><strong>How to use it</strong> — Nothing to do. Open the Inbox tab to see what has been
+processed.</p>
+<p><strong>What you get per email</strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Overview</strong></td>
+<td>A few sentences: what this email is about</td>
+</tr>
+<tr>
+<td><strong>Key points</strong></td>
+<td>Up to seven, each traceable to the message it came from</td>
+</tr>
+<tr>
+<td><strong>Action items</strong></td>
+<td>Task, and where stated, who owns it and by when</td>
+</tr>
+<tr>
+<td><strong>Language</strong></td>
+<td>The language of the incoming mail — the draft is written to match</td>
+</tr>
+<tr>
+<td><strong>Draft reply</strong></td>
+<td>In Gmail, threaded under the original. Never sent.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What you should know</strong></p>
+<ul>
+<li>Default checking interval is 60 seconds.</li>
+<li>The draft text is <strong>not</strong> shown in the panel on purpose — it lives in Gmail,
+which is where you will edit and send it. Press <strong>Check draft</strong> to go there.</li>
+<li>A &quot;truncated&quot; badge means the original was too long to read in full.</li>
+<li>Reply drafts are suggestions. Read them before sending. They can be wrong.</li>
+</ul>
+<hr>
+<h2 id="-f-04--review-a-draft-in-gmail">👤 F-04 · Review a draft in Gmail</h2>
+<p><strong>What it does</strong> — Takes you to the conversation in Gmail, where the draft is
+attached under the thread.</p>
+<p><strong>How to use it</strong> — Inbox tab → expand an email → <strong>Check draft</strong>. A new Gmail
+tab opens.</p>
+<p><strong>What you should know</strong></p>
+<ul>
+<li>The link opens the <strong>thread</strong>, not the draft directly — Gmail has no reliable
+deep link to an individual draft.</li>
+<li>If you use several Google accounts in one browser, the link opens whichever
+signed in first, which may not be the connected one.</li>
+<li>Occasionally you will see <em>&quot;The reply was generated but could not be filed in
+Gmail.&quot;</em> The text was written and saved, but Gmail was unreachable at that
+moment, so there is no draft to open.</li>
+</ul>
+<hr>
+<h2 id="-f-05--see-what-was-skipped-and-why">👤 F-05 · See what was skipped, and why</h2>
+<p><strong>What it does</strong> — Records every inbound email, including the ones nothing
+happened to.</p>
+<p><strong>How to use it</strong> — Logs tab. Filter by status: completed / failed / skipped.</p>
+<p><strong>What you should know</strong></p>
+<ul>
+<li><strong>skipped</strong> = the sender matched no rule. This is the normal, intended outcome
+for most mail, and it costs nothing.</li>
+<li><strong>failed</strong> = processing was attempted and did not finish. The most common
+cause is an email with no readable text — image-only mail, calendar invites,
+some HTML newsletters.</li>
+<li>If your Inbox tab is empty, this is the tab that tells you why.</li>
+</ul>
+<hr>
+<h2 id="-f-06--rescan-mail-that-was-skipped">👤 F-06 · Rescan mail that was skipped</h2>
+<p><strong>What it does</strong> — Re-examines recently skipped mail against your <em>current</em>
+rules, so mail that arrived before you added a rule is not stranded.</p>
+<p><strong>How to use it</strong> — Whitelist tab → <strong>Rescan</strong>.</p>
+<p><strong>What you should know</strong></p>
+<ul>
+<li>It only reaches back 24 hours by default.</li>
+<li>It is an explicit button, never automatic, because a sweep genuinely re-reads
+mail, spends AI calls, and creates real drafts in your mailbox.</li>
+<li>It needs a connected account, and cannot recover mail Gmail no longer has.</li>
+<li>The result appears in Logs; the button returns immediately.</li>
+</ul>
+<hr>
+<h2 id="-f-07--replied-mail-retires-itself">👤 F-07 · Replied mail retires itself</h2>
+<p><strong>What it does</strong> — Once you reply on a thread, that email disappears from the
+Inbox view. It has been dealt with.</p>
+<p><strong>How to use it</strong> — Nothing to do.</p>
+<p><strong>What you should know</strong></p>
+<ul>
+<li>Detection works by looking at your <strong>sent mail</strong>, so replies you typed
+entirely by hand count too — you do not have to use the generated draft.</li>
+<li>The record is kept; Logs still shows it.</li>
+<li>Detection happens on the next poll, so allow a minute.</li>
+</ul>
+<hr>
+<h2 id="-f-08--dashboard">👤 F-08 · Dashboard</h2>
+<p><strong>What it does</strong> — Shows whether the system is working and how much it is doing.</p>
+<p><strong>How to use it</strong> — Dashboard tab. Pick a time window.</p>
+<p><strong>Shows</strong> — Emails seen · matched vs unmatched · drafts generated · failures ·
+average processing time · status breakdown · your top senders · number of active
+rules.</p>
+<hr>
+<h2 id="-f-09--notifications-while-the-panel-is-closed">👤 F-09 · Notifications while the panel is closed</h2>
+<p><strong>What it does</strong> — Puts a count on the toolbar icon and (optionally) shows a
+desktop notification when new mail has been processed.</p>
+<p><strong>How to use it</strong> — Settings → Background check interval, and the notifications
+toggle.</p>
+<p><strong>What you should know</strong></p>
+<ul>
+<li>Chrome will not run background checks more than once a minute.</li>
+<li>You are notified when the count <strong>increases</strong>, not on every check.</li>
+<li>Opening the Inbox tab clears the badge.</li>
+</ul>
+<hr>
+<h2 id="-f-10--settings">👤 F-10 · Settings</h2>
+<p>Backend URL (with a <strong>Test</strong> button) · background interval · notifications
+toggle · Gmail connect/disconnect · reset to defaults.</p>
+<p>Settings are stored <strong>on this device only</strong> and are not shared with the backend.</p>
+<hr>
+<h1 id="7-user-stories">7. User Stories</h1>
+<h2 id="conventions">Conventions</h2>
+<ul>
+<li><strong>Priority</strong> — <code>P0</code> MVP-critical (the product does not function without it) ·
+<code>P1</code> important · <code>P2</code> nice to have, still implemented.</li>
+<li><strong>Acceptance Criteria</strong> use Given–When–Then.</li>
+<li>Each story names the responsible layer: <strong>[EXT]</strong> Chrome extension ·
+<strong>[BE]</strong> backend · <strong>[GMAIL]</strong> Gmail API · <strong>[LLM]</strong> model provider.</li>
+</ul>
+<hr>
+<h3 id="us-01--connect-a-gmail-account">US-01 · Connect a Gmail account</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-01</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want to connect my Gmail account to the assistant, so that it
+can read new mail and prepare draft replies for me.</p>
+<p><strong>Preconditions</strong></p>
+<ul>
+<li>The backend is running and reachable at the configured URL.</li>
+<li><code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> are set in <code>backend/.env</code>.</li>
+<li>My address is listed as a test user on the OAuth consent screen.</li>
+<li>No account is currently connected.</li>
+</ul>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> the backend has Google credentials configured and no account
+connected, <em>when</em> I open Settings, <em>then</em> I see a <strong>Connect Gmail</strong> button.</li>
+<li><strong>AC2</strong> — <em>Given</em> I click Connect Gmail, <em>when</em> the browser opens Google's
+consent screen, <em>then</em> the requested scopes are exactly <code>gmail.readonly</code>,
+<code>gmail.compose</code> and <code>userinfo.email</code>.</li>
+<li><strong>AC3</strong> — <em>Given</em> I approve consent, <em>when</em> Google redirects back, <em>then</em> a
+confirmation page names the connected address and tells me I can close the tab.</li>
+<li><strong>AC4</strong> — <em>Given</em> consent succeeded, <em>when</em> I return to the panel, <em>then</em>
+Settings shows <strong>Connected</strong> with my address, and the four tabs become visible.</li>
+<li><strong>AC5</strong> — <em>Given</em> the backend has <strong>no</strong> Google credentials configured, <em>when</em>
+I open Settings, <em>then</em> I see an explanatory notice instead of a Connect
+button, and no OAuth attempt is possible.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> User opens Settings and clicks <em>Connect Gmail</em>.</li>
+<li><strong>[EXT]</strong> Opens <code>GET /api/v1/gmail/auth/start</code> in a new tab.</li>
+<li><strong>[BE]</strong> Issues a single-use <code>state</code> and redirects (307) to Google.</li>
+<li><strong>[GMAIL]</strong> User authenticates and approves the scopes.</li>
+<li><strong>[GMAIL]</strong> Redirects to <code>/api/v1/gmail/auth/callback?code=…&amp;state=…</code>.</li>
+<li><strong>[BE]</strong> Validates and consumes <code>state</code>; exchanges the code for tokens.</li>
+<li><strong>[BE]</strong> Calls <code>userinfo</code> to identify the account; persists an
+<code>OAuthCredential</code>.</li>
+<li><strong>[BE]</strong> Renders a success page.</li>
+<li><strong>[EXT]</strong> Next <code>GET …/auth/status</code> poll returns <code>connected: true</code>; the gate
+opens.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1 — Already connected.</strong> Connecting again replaces the stored credential
+(<code>provider</code> is unique). No second row is created.</li>
+<li><strong>A2 — User cancels at Google.</strong> Google returns <code>error=access_denied</code>; the
+callback renders &quot;Connection cancelled&quot;. Nothing is stored.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OAuth not configured</td>
+<td><code>/start</code> → <strong>503</strong> with a readable message</td>
+</tr>
+<tr>
+<td><code>state</code> missing, expired or replayed</td>
+<td>Callback renders &quot;Expired or invalid request&quot; and instructs restarting from Settings</td>
+</tr>
+<tr>
+<td>Code exchange fails</td>
+<td>Callback renders &quot;Could not connect&quot; with Google's message; nothing persisted</td>
+</tr>
+<tr>
+<td>Gmail API not enabled on the project</td>
+<td>Consent succeeds; later polls fail with 403, surfaced as <code>poller.last_error</code></td>
+</tr>
+<tr>
+<td>Backend unreachable</td>
+<td>Settings shows a connection error; the Test button diagnoses it</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong></p>
+<ul>
+<li>One <code>oauth_credentials</code> row exists with a refresh token and granted scopes.</li>
+<li><code>last_polled_at</code> is null, so the first poll uses the 60-minute lookback.</li>
+<li>The panel's four tabs are unlocked.</li>
+</ul>
+<p><strong>Dependencies</strong> — None. This is the root story.</p>
+<hr>
+<h3 id="us-02--see-connection-status-and-disconnect">US-02 · See connection status and disconnect</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-02</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want to see which account is connected and be able to
+disconnect it, so that I stay in control of what the assistant can reach.</p>
+<p><strong>Preconditions</strong> — Backend reachable.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> an account is connected, <em>when</em> I open Settings, <em>then</em> I
+see the address, the granted scopes and when it last checked for mail.</li>
+<li><strong>AC2</strong> — <em>Given</em> an account is connected, <em>when</em> I click <strong>Disconnect</strong>,
+<em>then</em> the credential is deleted and the panel returns to the connect screen.</li>
+<li><strong>AC3</strong> — <em>Given</em> no account is connected, <em>when</em> I disconnect, <em>then</em> the
+request returns <strong>404</strong> and the UI does not claim success.</li>
+<li><strong>AC4</strong> — <em>Given</em> polling has failed, <em>when</em> I open Settings, <em>then</em> the last
+error is visible rather than silently swallowed.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> Settings queries <code>GET /api/v1/gmail/auth/status</code>.</li>
+<li><strong>[BE]</strong> Returns <code>configured</code>, <code>connected</code>, <code>email_address</code>, <code>scopes</code>,
+<code>last_polled_at</code>, <code>poll_interval_seconds</code>, and the poller's status.</li>
+<li><strong>[EXT]</strong> Renders. On <strong>Disconnect</strong>, calls <code>DELETE /api/v1/gmail/auth/</code>.</li>
+<li><strong>[BE]</strong> Removes the credential; returns <strong>204</strong>.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1</strong> — The user revokes access at Google instead. The stored credential
+remains locally but polls begin failing with 401, shown as <code>last_error</code>.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No account connected</td>
+<td>404, surfaced verbatim</td>
+</tr>
+<tr>
+<td>Backend down</td>
+<td>Query error state with a Retry button</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — After disconnect: no <code>oauth_credentials</code> row; polling backs
+off; existing logs, summaries and drafts are <strong>retained</strong>.</p>
+<p><strong>Dependencies</strong> — US-01.</p>
+<hr>
+<h3 id="us-03--add-a-sender-to-the-whitelist">US-03 · Add a sender to the whitelist</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-03</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want to add an email address or a whole domain to the
+whitelist, so that mail from that source is summarised and gets a draft reply.</p>
+<p><strong>Preconditions</strong> — Backend reachable. Whitelist tab open.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> an empty field, <em>when</em> I type <code>alice@example.com</code>, <em>then</em>
+the panel shows an <code>email</code> badge and explains it matches that address only.</li>
+<li><strong>AC2</strong> — <em>Given</em> an empty field, <em>when</em> I type <code>@example.com</code>, <em>then</em> the
+panel shows a <code>domain</code> badge and warns it matches <strong>everyone</strong> at that domain
+— <strong>before</strong> I submit.</li>
+<li><strong>AC3</strong> — <em>Given</em> a valid value, <em>when</em> I click Add, <em>then</em> a rule is created
+(<strong>201</strong>), the list refreshes, and the field clears.</li>
+<li><strong>AC4</strong> — <em>Given</em> a value that already exists, <em>when</em> I click Add, <em>then</em> I
+see the backend's <strong>409</strong> message inline and the field keeps my input.</li>
+<li><strong>AC5</strong> — <em>Given</em> a malformed value, <em>when</em> I click Add, <em>then</em> the Add button
+is disabled and a validation hint is shown; no request is made.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> User types a value; the panel infers the type from a leading <code>@</code>,
+mirroring the backend's own rule, and shows the consequence live.</li>
+<li><strong>[EXT]</strong> <code>POST /api/v1/whitelist { value }</code>.</li>
+<li><strong>[BE]</strong> Guardrails normalise (trim, lowercase) and validate; type inferred.</li>
+<li><strong>[BE]</strong> Checks for an existing active row with the same value.</li>
+<li><strong>[BE]</strong> Inserts, invalidates the match cache, returns <strong>201</strong>.</li>
+<li><strong>[EXT]</strong> Invalidates its own <code>['whitelist']</code> query cache and re-renders.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1 — Previously deleted value.</strong> Delete is soft, so re-adding the same value
+<strong>reactivates the original row</strong> rather than creating a new one. &quot;Delete then
+re-add&quot; is not a clean slate.</li>
+<li><strong>A2 — Sender suggested from Gmail.</strong> See US-04.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Empty / malformed</td>
+<td>422; message shown verbatim</td>
+</tr>
+<tr>
+<td>Over 320 chars (email) or 255 (domain)</td>
+<td>422 <code>value_too_long</code></td>
+</tr>
+<tr>
+<td>Duplicate active value</td>
+<td>409; input preserved for correction</td>
+</tr>
+<tr>
+<td>Backend unreachable</td>
+<td>Inline error; nothing lost</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong></p>
+<ul>
+<li>An active <code>whitelist_entries</code> row exists.</li>
+<li>The backend match cache is invalidated; new mail matches immediately.</li>
+<li>Mail that <strong>already</strong> arrived is unaffected — see US-11.</li>
+</ul>
+<p><strong>Dependencies</strong> — None (works without Gmail connected).</p>
+<hr>
+<h3 id="us-04--quick-add-the-sender-of-the-thread-i-am-reading">US-04 · Quick-add the sender of the thread I am reading</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-04</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong> reading a thread in Gmail, I want the panel to offer that sender,
+so that I can whitelist them without retyping the address.</p>
+<p><strong>Preconditions</strong> — On <code>mail.google.com</code> with a thread open; the panel is open
+on the Whitelist tab; the quick-add field is empty.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> a thread is open, <em>when</em> I switch to the Whitelist tab,
+<em>then</em> a suggestion row shows that thread's sender address.</li>
+<li><strong>AC2</strong> — <em>Given</em> the suggestion is shown, <em>when</em> I click it, <em>then</em> the value
+<strong>fills the input</strong> rather than submitting — so the inferred type and any
+validation feedback are visible before anything is created.</li>
+<li><strong>AC3</strong> — <em>Given</em> I start typing, <em>when</em> the field is non-empty, <em>then</em> the
+suggestion is hidden; it is a shortcut for an empty field, not a competitor.</li>
+<li><strong>AC4</strong> — <em>Given</em> I navigate back to the inbox list, <em>when</em> no thread is open,
+<em>then</em> the suggestion is withdrawn.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT/content]</strong> A <code>MutationObserver</code> fires; capture is debounced 400 ms.</li>
+<li><strong>[EXT/content]</strong> Reads the newest expanded message and extracts the sender
+from its <strong>header</strong> region only, trying four strategies in order.</li>
+<li><strong>[EXT/content]</strong> Writes <code>{email, name, subject}</code> to <code>chrome.storage.local</code>.</li>
+<li><strong>[EXT/panel]</strong> Reads it and renders the suggestion.</li>
+<li>User clicks it → the value is placed in the field → continue at US-03 step 1.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1 — Same sender, different thread.</strong> The capture signature includes the
+subject, so moving between two threads from one sender still refreshes.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No thread on screen</td>
+<td>No suggestion; the field works normally</td>
+</tr>
+<tr>
+<td>Gmail changed its DOM and no strategy matches</td>
+<td>No suggestion; feature degrades silently. Fix <code>readSender.ts</code></td>
+</tr>
+<tr>
+<td>Address found only in the quoted body</td>
+<td><strong>Not</strong> used — reading beyond the header risks whitelisting the wrong person</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — Only the input field is populated. Nothing is created
+until the user presses Add.</p>
+<p><strong>Dependencies</strong> — US-03.</p>
+<hr>
+<h3 id="us-05--import-many-rules-from-a-file">US-05 · Import many rules from a file</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-05</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong> with an existing list of contacts, I want to import a CSV or Excel
+file, so that I do not add hundreds of rules by hand.</p>
+<p><strong>Preconditions</strong> — A file with a <code>value</code> column. Backend reachable.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> a valid CSV, <em>when</em> I upload it, <em>then</em> I get a report
+showing total rows, inserted, skipped duplicates and per-row errors.</li>
+<li><strong>AC2</strong> — <em>Given</em> a file with some invalid rows, <em>when</em> I upload it, <em>then</em>
+valid rows are still inserted and each invalid row is listed with its
+spreadsheet row number and reason.</li>
+<li><strong>AC3</strong> — <em>Given</em> a file with a legacy <code>priority</code> column, <em>when</em> I upload it,
+<em>then</em> the column is ignored and the import succeeds.</li>
+<li><strong>AC4</strong> — <em>Given</em> an unsupported file type, <em>when</em> I upload it, <em>then</em> I get a
+<strong>400</strong> naming the accepted formats.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> User selects a file; <code>POST /api/v1/whitelist/import</code> (multipart).</li>
+<li><strong>[BE]</strong> Detects format from extension or content type.</li>
+<li><strong>[BE]</strong> Validates each row; inserts valid, non-duplicate values.</li>
+<li><strong>[BE]</strong> Invalidates the match cache if anything was inserted.</li>
+<li><strong>[BE]</strong> Returns a <code>BulkImportReport</code>.</li>
+<li><strong>[EXT]</strong> Renders it as a <strong>panel</strong>, not a toast — a toast cannot carry a
+per-row error list.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1</strong> — All rows are duplicates: <code>inserted: 0</code>, cache untouched, report still
+rendered.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unsupported format</td>
+<td>400</td>
+</tr>
+<tr>
+<td>Over <code>BULK_IMPORT_MAX_ROWS</code> (10 000)</td>
+<td><strong>Truncated, not rejected</strong> — the first 10 000 rows import and a warning names the real row count</td>
+</tr>
+<tr>
+<td>Missing <code>value</code> column</td>
+<td>Every row reports &quot;Missing required 'value' field&quot;</td>
+</tr>
+<tr>
+<td>Malformed row</td>
+<td>Listed with <code>row_index</code> (1-based <strong>including</strong> the header, so the first data row is 2 — it maps to the spreadsheet)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — Valid rows exist as active entries; the report is
+displayed until dismissed.</p>
+<p><strong>Dependencies</strong> — US-03.</p>
+<hr>
+<h3 id="us-06--edit-a-whitelist-rule">US-06 · Edit a whitelist rule</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-06</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want to correct a rule I typed wrong, so that I do not have to
+delete and recreate it.</p>
+<p><strong>Preconditions</strong> — At least one active rule.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> a rule, <em>when</em> I edit its value and save, <em>then</em> the rule is
+updated and the list refreshes.</li>
+<li><strong>AC2</strong> — <em>Given</em> I have changed nothing, <em>when</em> I look at Save, <em>then</em> it is
+disabled — an empty patch is a <strong>400</strong> on the backend.</li>
+<li><strong>AC3</strong> — <em>Given</em> I change <code>bob@x.com</code> to <code>@x.com</code>, <em>when</em> I save, <em>then</em> the
+rule's type is <strong>re-inferred to domain</strong> and I am warned that it now matches
+the whole domain.</li>
+<li><strong>AC4</strong> — <em>Given</em> I enter a value another active rule already uses, <em>when</em> I
+save, <em>then</em> I see the <strong>409</strong> message and the edit is not applied.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> User edits inline; only changed fields are sent.</li>
+<li><strong>[EXT]</strong> <code>PUT /api/v1/whitelist/{id} { value }</code>.</li>
+<li><strong>[BE]</strong> Re-validates, re-infers type, checks duplicates, updates.</li>
+<li><strong>[BE]</strong> Invalidates the match cache; returns the updated entry.</li>
+</ol>
+<p><strong>Alternative Flow</strong> — <strong>A1</strong> Cancel: the row reverts, nothing sent.</p>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Empty patch</td>
+<td>400 — prevented client-side</td>
+</tr>
+<tr>
+<td>Entry not found (deleted concurrently)</td>
+<td>404; list refreshed</td>
+</tr>
+<tr>
+<td>Invalid value</td>
+<td>422 verbatim</td>
+</tr>
+<tr>
+<td>Duplicate</td>
+<td>409 verbatim</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — The row carries the new value and possibly a new
+<code>entry_type</code>. Matching behaviour changes within one cache TTL.</p>
+<p><strong>Dependencies</strong> — US-03.</p>
+<hr>
+<h3 id="us-07--remove-a-whitelist-rule">US-07 · Remove a whitelist rule</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-07</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want to stop the assistant processing a sender, so that their
+mail is left alone from now on.</p>
+<p><strong>Preconditions</strong> — At least one active rule.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> a rule, <em>when</em> I delete it, <em>then</em> it disappears from the
+list (<strong>204</strong>).</li>
+<li><strong>AC2</strong> — <em>Given</em> a deleted rule, <em>when</em> new mail arrives from that sender,
+<em>then</em> it is logged as <strong>skipped</strong>.</li>
+<li><strong>AC3</strong> — <em>Given</em> a deleted rule, <em>when</em> I look for a way to restore it,
+<em>then</em> there is none — deletion is presented as final.</li>
+<li><strong>AC4</strong> — <em>Given</em> a deleted rule, <em>when</em> I look at the Dashboard, <em>then</em>
+emails it already processed are <strong>still counted</strong> — the dashboard reports what
+happened, not what today's rules would do.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> <code>DELETE /api/v1/whitelist/{id}</code>.</li>
+<li><strong>[BE]</strong> Sets <code>is_active = False</code> (soft delete).</li>
+<li><strong>[BE]</strong> Invalidates the match cache; returns <strong>204</strong>.</li>
+</ol>
+<p><strong>Alternative Flow</strong> — <strong>A1</strong> Re-adding the same value later reactivates the
+original row (see US-03/A1).</p>
+<p><strong>Error Cases</strong> — Not found → 404. Backend unreachable → error state, list
+unchanged.</p>
+<p><strong>Post Conditions</strong> — The row persists with <code>is_active = False</code>. Existing
+<code>match_logs</code> keep their FK and history.</p>
+<p><strong>Dependencies</strong> — US-03.</p>
+<hr>
+<h3 id="us-08--have-new-mail-summarised-and-drafted-automatically">US-08 · Have new mail summarised and drafted automatically</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-08</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want mail from whitelisted senders to be summarised and to have
+a reply drafted without me asking, so that the work is already done when I look.</p>
+<p><strong>Preconditions</strong></p>
+<ul>
+<li>An account is connected (US-01).</li>
+<li>At least one active whitelist rule (US-03).</li>
+<li>At least one LLM provider key configured.</li>
+</ul>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> a whitelisted sender emails me, <em>when</em> one poll interval
+passes, <em>then</em> a <code>match_logs</code> row exists with status <strong>completed</strong>.</li>
+<li><strong>AC2</strong> — <em>Given</em> processing completed, <em>when</em> I look at that email in the
+panel, <em>then</em> it carries an overview, key points, action items and a detected
+language.</li>
+<li><strong>AC3</strong> — <em>Given</em> processing completed, <em>when</em> I open the thread in Gmail,
+<em>then</em> a draft reply is attached <strong>to that conversation</strong>, in the language of
+the incoming mail, and <strong>nothing has been sent</strong>.</li>
+<li><strong>AC4</strong> — <em>Given</em> a sender matching <strong>no</strong> rule emails me, <em>when</em> a poll
+passes, <em>then</em> the log is <strong>skipped</strong>, no LLM call is made, and no draft is
+created.</li>
+<li><strong>AC5</strong> — <em>Given</em> the same Gmail message is seen twice, <em>when</em> it is
+processed, <em>then</em> no duplicate log and no second draft are created.</li>
+<li><strong>AC6</strong> — <em>Given</em> routing confidence is below <code>0.6</code>, <em>when</em> the draft is
+produced, <em>then</em> <code>used_fallback</code> is true and the safe generic template is used.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[BE]</strong> Poller lists messages newer than the watermark (max 25).</li>
+<li><strong>[BE]</strong> Fetches each, parses to an <code>InboundEmailEvent</code>, buffers.</li>
+<li><strong>[BE]</strong> Worker picks one up; sanitizes the sender.</li>
+<li><strong>[BE]</strong> Rejects duplicates on <code>gmail_message_id</code>.</li>
+<li><strong>[BE]</strong> Creates a <code>MatchLog</code>.</li>
+<li><strong>[BE]</strong> <code>MatcherTool</code> matches — exact address beats domain.</li>
+<li><strong>[BE]</strong> Status → <code>PROCESSING</code>.</li>
+<li><strong>[LLM]</strong> Summarize (Groq → Gemini). Citations validated against the
+messages actually processed.</li>
+<li><strong>[BE]</strong> Persists <code>summary_json</code> <strong>before</strong> anything else can fail.</li>
+<li><strong>[LLM]</strong> Route → <code>template_id</code>, <code>extracted_data</code>, <code>confidence_score</code>.</li>
+<li><strong>[BE]</strong> Validates against the schema; degrades below threshold.</li>
+<li><strong>[LLM]</strong> Compose the reply in <code>summary.language</code>; backend strips fences,
+preambles, <code>Subject:</code> lines and sign-offs.</li>
+<li><strong>[BE]</strong> Stores the <code>GeneratedDraft</code>.</li>
+<li><strong>[GMAIL]</strong> <code>drafts.create</code> with <code>threadId</code> plus <code>In-Reply-To</code> /
+<code>References</code>.</li>
+<li><strong>[BE]</strong> Stores <code>gmail_draft_id</code>; status → <code>COMPLETED</code> with
+<code>processing_ms</code>.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1 — Not whitelisted.</strong> Stop at step 6: <code>SKIPPED</code>, reason &quot;Sender not on
+whitelist.&quot; Zero cost.</li>
+<li><strong>A2 — No LLM key.</strong> Routing uses the <code>mock</code> keyword matcher and drafting
+falls back to a static template. The pipeline completes; quality is poor.</li>
+<li><strong>A3 — Groq fails.</strong> Gemini is tried once for summarization, and independently
+for routing and composing.</li>
+<li><strong>A4 — Compose fails.</strong> <code>LLMDrafter</code> falls back to the static template. There
+is always a draft; the email is never <code>FAILED</code> because writing failed.</li>
+<li><strong>A5 — Pushed rather than polled.</strong> <code>POST /api/v1/gmail/incoming</code> injects an
+event into the same pipeline (used for testing).</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unparseable sender</td>
+<td>Nothing logged; warning only</td>
+</tr>
+<tr>
+<td>No readable body</td>
+<td>Non-retryable <code>InvalidEmailContentError</code> → <strong>failed</strong></td>
+</tr>
+<tr>
+<td>Retryable summarization error</td>
+<td>Re-raised → retry queue, exponential backoff, max 3 attempts, then <strong>failed</strong></td>
+</tr>
+<tr>
+<td>All routing providers fail</td>
+<td><code>LLMRoutingError</code> → 502 shape; treated as an unexpected error → retry then <strong>failed</strong></td>
+</tr>
+<tr>
+<td>Gmail unreachable at draft time</td>
+<td><strong>Swallowed.</strong> Status stays <strong>completed</strong>, <code>gmail_draft_id</code> null, panel shows an amber notice</td>
+</tr>
+<tr>
+<td>Account disconnected mid-run</td>
+<td>Buffered mail still processes; draft filing skipped</td>
+</tr>
+<tr>
+<td>One message in the batch unreadable</td>
+<td>Logged and skipped; the batch continues</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong></p>
+<ul>
+<li><code>match_logs</code>: one row, <code>completed</code>, with <code>summary_json</code> and <code>processing_ms</code>.</li>
+<li><code>generated_drafts</code>: one row, version 1, with provider, template, confidence,
+<code>used_fallback</code> and (usually) <code>gmail_draft_id</code>.</li>
+<li>Gmail: one draft on the original thread. <strong>No mail sent.</strong></li>
+</ul>
+<p><strong>Dependencies</strong> — US-01, US-03.</p>
+<hr>
+<h3 id="us-09--read-the-summary-of-a-processed-email">US-09 · Read the summary of a processed email</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-09</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want to read a structured summary of each processed email, so
+that I know what it says without opening it.</p>
+<p><strong>Preconditions</strong> — At least one email has completed processing (US-08).</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> processed emails exist, <em>when</em> I open the Inbox tab, <em>then</em>
+they are listed newest first with sender, subject and time.</li>
+<li><strong>AC2</strong> — <em>Given</em> an email in the list, <em>when</em> I expand it, <em>then</em> I see the
+overview, a language badge, key points and action items.</li>
+<li><strong>AC3</strong> — <em>Given</em> an email had no action items, <em>when</em> I expand it, <em>then</em> the
+Action items section is <strong>absent</strong> — an empty heading reads as failure.</li>
+<li><strong>AC4</strong> — <em>Given</em> the original was truncated, <em>when</em> I expand it, <em>then</em> a
+&quot;truncated&quot; badge and an explanatory line are shown.</li>
+<li><strong>AC5</strong> — <em>Given</em> nothing has been processed, <em>when</em> I open the tab, <em>then</em> I
+see an empty state that points me at Logs to find out why.</li>
+<li><strong>AC6</strong> — <em>Given</em> the panel is open, <em>when</em> 30 seconds pass, <em>then</em> the list
+refreshes without me acting.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> <code>GET /api/v1/auto-reply/inbox?page=1&amp;page_size=25</code>.</li>
+<li><strong>[BE]</strong> Excludes skipped and already-replied rows by default; returns log +
+summary + latest draft <strong>in one response</strong>.</li>
+<li><strong>[EXT]</strong> Renders cards; expanding reveals <code>SummaryView</code>.</li>
+<li><strong>[EXT]</strong> Records &quot;seen now&quot;, clearing the badge.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1 — Older row with no summary.</strong> Rows predating summary persistence render
+without a summary section rather than erroring.</li>
+<li><strong>A2 — More than 25 items.</strong> Paginated; <code>total</code> is counted before pagination.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backend unreachable</td>
+<td>Error state with a Retry button gated on <code>retryable</code></td>
+</tr>
+<tr>
+<td>Panel reopened</td>
+<td>In-memory cache is gone; a refetch shows a skeleton first</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — The &quot;last seen&quot; watermark advances; the badge is cleared.</p>
+<p><strong>Dependencies</strong> — US-08.</p>
+<hr>
+<h3 id="us-10--open-the-draft-in-gmail">US-10 · Open the draft in Gmail</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-10</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want to jump from the panel to the draft in Gmail, so that I
+can edit and send it where I normally work.</p>
+<p><strong>Preconditions</strong> — A processed email with a stored draft.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> a draft was filed, <em>when</em> I expand the email, <em>then</em> I see
+the template used, the provider, and the message that a draft was created and
+nothing was sent.</li>
+<li><strong>AC2</strong> — <em>Given</em> a draft was filed, <em>when</em> I click <strong>Check draft</strong>, <em>then</em>
+Gmail opens in a <strong>new tab</strong> at that conversation, with the draft attached.</li>
+<li><strong>AC3</strong> — <em>Given</em> the draft could <strong>not</strong> be filed in Gmail, <em>when</em> I expand
+the email, <em>then</em> an amber notice states the reply was generated but not
+filed, so I do not go looking for a draft that is not there.</li>
+<li><strong>AC4</strong> — <em>Given</em> several draft versions exist, <em>when</em> I expand the email,
+<em>then</em> the version badge shows which one is current.</li>
+<li><strong>AC5</strong> — <em>Given</em> I am on the Inbox tab, <em>when</em> I look for the draft text,
+<em>then</em> it is <strong>not</strong> rendered in the panel — by design.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> Renders <code>DraftSection</code> from <code>latest_draft</code>.</li>
+<li><strong>[EXT]</strong> Builds <code>https://mail.google.com/mail/u/0/#all/&lt;threadId&gt;</code>.</li>
+<li><strong>[EXT]</strong> <code>window.open(url, '_blank', 'noopener')</code>.</li>
+<li><strong>[GMAIL]</strong> Shows the thread with the draft inline.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1 — No thread id.</strong> Falls back to the message id.</li>
+<li><strong>A2 — Thread archived.</strong> <code>#all/</code> is used precisely so archived threads still
+resolve; <code>#inbox/</code> would land on an empty view.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gmail_draft_id</code> null</td>
+<td>AC3 notice; the button still opens the thread</td>
+</tr>
+<tr>
+<td>Multiple Google accounts</td>
+<td><code>/u/0/</code> is the first signed-in account, which may be the wrong mailbox. <strong>Known limitation</strong> — Gmail supports no other selector</td>
+</tr>
+<tr>
+<td>Draft deleted in Gmail</td>
+<td>The thread opens without a draft; the stored text remains</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — A new Gmail tab. No state changes in the backend.
+Sending remains entirely the user's action.</p>
+<p><strong>Dependencies</strong> — US-08, US-09.</p>
+<hr>
+<h3 id="us-11--rescan-mail-skipped-before-a-rule-existed">US-11 · Rescan mail skipped before a rule existed</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-11</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong> who has just added a rule, I want recently skipped mail from that
+sender re-examined, so that adding a rule is not silently useless for mail that
+already arrived.</p>
+<p><strong>Preconditions</strong> — A connected account; at least one skipped log within
+<code>WHITELIST_RESCAN_LOOKBACK_HOURS</code> (24); at least one rule that now matches it.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> skipped mail now matches a rule, <em>when</em> I trigger Rescan,
+<em>then</em> the request is accepted (<strong>202</strong>) and returns immediately.</li>
+<li><strong>AC2</strong> — <em>Given</em> the sweep runs, <em>when</em> a skipped log now matches, <em>then</em> it
+is re-fetched from Gmail, processed exactly as new mail, and its stale skip
+reason is <strong>cleared</strong>.</li>
+<li><strong>AC3</strong> — <em>Given</em> the sweep runs, <em>when</em> a skipped log still matches nothing,
+<em>then</em> it is left untouched.</li>
+<li><strong>AC4</strong> — <em>Given</em> I add a rule, <em>when</em> I do <strong>not</strong> press Rescan, <em>then</em> no
+sweep occurs — adding a rule never spends LLM calls or creates drafts as a
+side effect.</li>
+<li><strong>AC5</strong> — <em>Given</em> I click Rescan several times quickly, <em>when</em> the worker
+picks it up, <em>then</em> exactly one sweep runs.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> <code>POST /api/v1/whitelist/rescan</code>.</li>
+<li><strong>[BE]</strong> Sets the rescan flag; returns <strong>202</strong>.</li>
+<li><strong>[BE]</strong> Worker consumes the flag before handling new inbound mail, so a
+just-added rule applies to the backlog in arrival order.</li>
+<li><strong>[BE]</strong> Lists <code>SKIPPED</code> logs within the lookback window.</li>
+<li><strong>[BE]</strong> For each: re-match → re-fetch from Gmail → clear <code>error_detail</code> →
+run the standard core pipeline (US-08 steps 8–15).</li>
+<li><strong>[BE]</strong> Logs a report: examined / matched / failed.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1 — Lookback is 0.</strong> Rescanning is disabled; the sweep returns an empty
+report.</li>
+<li><strong>A2 — Concurrently processed.</strong> A log already moved out of <code>SKIPPED</code> is
+stepped over, not an error.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No account connected</td>
+<td>Each re-fetch fails; logged, sweep continues, nothing changes</td>
+</tr>
+<tr>
+<td>Gmail no longer has the message</td>
+<td>That log is counted failed and skipped over</td>
+</tr>
+<tr>
+<td>One log raises</td>
+<td>Counted, logged, sweep continues. The log stays <code>PROCESSING</code> and will not be re-picked (only <code>SKIPPED</code> is eligible)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — Matching logs move from <code>skipped</code> to <code>completed</code> (or
+<code>failed</code>) with a summary, a draft and a Gmail draft. The result is visible in
+Logs; the endpoint itself reports nothing.</p>
+<p><strong>Dependencies</strong> — US-01, US-03, US-08.</p>
+<hr>
+<h3 id="us-12--understand-why-an-email-was-not-processed">US-12 · Understand why an email was not processed</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-12</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong> whose Inbox tab looks empty, I want to see every email that
+arrived and what happened to it, so that I can tell &quot;nothing arrived&quot; from
+&quot;nothing matched&quot;.</p>
+<p><strong>Preconditions</strong> — At least one poll has run.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> mail has been seen, <em>when</em> I open the Logs tab, <em>then</em> every
+inbound email is listed with a status, including skipped ones.</li>
+<li><strong>AC2</strong> — <em>Given</em> a skipped email, <em>when</em> I look at its row, <em>then</em> the reason
+reads &quot;Sender not on whitelist.&quot;</li>
+<li><strong>AC3</strong> — <em>Given</em> a failed email, <em>when</em> I look at its row, <em>then</em> the error
+detail is shown.</li>
+<li><strong>AC4</strong> — <em>Given</em> many rows, <em>when</em> I filter by status, <em>then</em> only matching
+rows are listed.</li>
+<li><strong>AC5</strong> — <em>Given</em> a completed email, <em>when</em> I look at its row, <em>then</em> I see
+the matched rule and the processing time.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> <code>GET /api/v1/auto-reply/logs</code> with filters.</li>
+<li><strong>[BE]</strong> Applies sender/status/date filters; paginates.</li>
+<li><strong>[EXT]</strong> Renders rows with status badges.</li>
+</ol>
+<p><strong>Alternative Flow</strong> — <strong>A1</strong> No logs at all: empty state indicating no mail has
+been seen yet (check the connection and the poll interval).</p>
+<p><strong>Error Cases</strong> — Backend unreachable → error state with Retry. Invalid status
+filter → validation error surfaced.</p>
+<p><strong>Post Conditions</strong> — None; read-only.</p>
+<p><strong>Dependencies</strong> — US-01.</p>
+<hr>
+<h3 id="us-13--monitor-volume-and-failures">US-13 · Monitor volume and failures</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-13</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong>, I want an at-a-glance view of what the assistant has been doing,
+so that I can tell whether it is healthy and worth its API cost.</p>
+<p><strong>Preconditions</strong> — Backend reachable.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> activity in the window, <em>when</em> I open the Dashboard, <em>then</em>
+I see inbound total, matched, unmatched, drafts generated, failures and
+average processing time.</li>
+<li><strong>AC2</strong> — <em>Given</em> I change the time window, <em>when</em> the query reruns, <em>then</em>
+every figure recomputes for that window.</li>
+<li><strong>AC3</strong> — <em>Given</em> whitelisted senders have written, <em>when</em> I look at Top
+senders, <em>then</em> the counts reconcile with <strong>Matched</strong> — the two use the same
+filter by construction.</li>
+<li><strong>AC4</strong> — <em>Given</em> a rule has since been deleted, <em>when</em> I look at the window
+in which it was active, <em>then</em> the mail it processed is <strong>still counted</strong>.</li>
+<li><strong>AC5</strong> — <em>Given</em> no activity, <em>when</em> I open the Dashboard, <em>then</em> zeros are
+shown rather than an error.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> <code>GET /api/v1/auto-reply/dashboard/summary?since_hours=24</code>.</li>
+<li><strong>[BE]</strong> Runs eight aggregate queries over <code>match_logs</code>,
+<code>generated_drafts</code> and <code>whitelist_entries</code>.</li>
+<li><strong>[EXT]</strong> Renders stat cards, breakdown bar and top-sender list.</li>
+</ol>
+<p><strong>Alternative Flow</strong> — <strong>A1</strong> Window widened to a year (8760 h): the same
+queries run over a larger range.</p>
+<p><strong>Error Cases</strong> — <code>since_hours</code> outside 1–8760 → 422. Backend unreachable →
+error state.</p>
+<p><strong>Post Conditions</strong> — None; read-only.</p>
+<p><strong>Dependencies</strong> — US-01.</p>
+<hr>
+<h3 id="us-14--be-told-about-new-mail-while-the-panel-is-closed">US-14 · Be told about new mail while the panel is closed</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-14</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong> who does not keep the panel open, I want the toolbar icon to tell
+me when new mail has been processed, so that I know when it is worth looking.</p>
+<p><strong>Preconditions</strong> — Extension installed; backend reachable.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> mail has been processed since I last looked, <em>when</em> the
+background check runs, <em>then</em> the toolbar icon shows that count.</li>
+<li><strong>AC2</strong> — <em>Given</em> the count has <strong>increased</strong> and notifications are on, <em>when</em>
+the check runs, <em>then</em> one desktop notification is shown.</li>
+<li><strong>AC3</strong> — <em>Given</em> the count has not increased, <em>when</em> the check runs again,
+<em>then</em> the same backlog is <strong>not</strong> re-announced.</li>
+<li><strong>AC4</strong> — <em>Given</em> I open the Inbox tab, <em>when</em> the list renders, <em>then</em> the
+badge clears and the watermark advances.</li>
+<li><strong>AC5</strong> — <em>Given</em> I set the interval to 5 minutes, <em>when</em> I save, <em>then</em> the
+alarm is rescheduled without reloading the extension.</li>
+<li><strong>AC6</strong> — <em>Given</em> notifications are off, <em>when</em> new mail is processed, <em>then</em>
+the badge still updates but no notification appears.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT/worker]</strong> Alarm fires; settings and watermark are read from storage
+(the worker starts cold every time).</li>
+<li><strong>[EXT/worker]</strong> <code>GET /auto-reply/inbox?since=&lt;lastSeenAt&gt;</code> via plain
+<code>fetch</code>.</li>
+<li><strong>[EXT/worker]</strong> Sets the badge to <code>total</code>.</li>
+<li><strong>[EXT/worker]</strong> If <code>total</code> exceeds the persisted high-water mark and
+notifications are on, notifies and advances the mark.</li>
+</ol>
+<p><strong>Alternative Flow</strong></p>
+<ul>
+<li><strong>A1 — Fresh install.</strong> One immediate check on install so a badge can appear
+without waiting out an interval.</li>
+<li><strong>A2 — Interval changed.</strong> A storage-change listener reschedules; the alarm is
+only rewritten when the period actually differs, because unconditional
+rewriting restarts the countdown and a frequently-woken worker would never
+reach its own deadline.</li>
+</ul>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backend unreachable</td>
+<td>The badge is <strong>left as-is</strong>. Clearing it would claim there is nothing new, which is not what we know</td>
+</tr>
+<tr>
+<td>Interval below 1 minute</td>
+<td>Clamped — Chrome refuses shorter alarms</td>
+</tr>
+<tr>
+<td>Worker terminated</td>
+<td>Nothing is lost; state lives in <code>chrome.storage</code> and every top-level statement is idempotent</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — Badge reflects unseen count; the high-water mark prevents
+duplicate notifications.</p>
+<p><strong>Dependencies</strong> — US-08.</p>
+<hr>
+<h3 id="us-15--point-the-extension-at-my-backend">US-15 · Point the extension at my backend</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-15</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong> whose backend is not on the default address, I want to change and
+verify the backend URL, so that the panel is not silently dead.</p>
+<p><strong>Preconditions</strong> — Extension installed.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> Settings is open, <em>when</em> I edit the URL, <em>then</em> a Save
+button appears only once the value actually differs.</li>
+<li><strong>AC2</strong> — <em>Given</em> a URL, <em>when</em> I click <strong>Test</strong>, <em>then</em> I see whether the
+backend responded, what status it returned, or that nothing answered.</li>
+<li><strong>AC3</strong> — <em>Given</em> a URL outside the granted origins, <em>when</em> I type it, <em>then</em>
+I am warned that the extension may only reach <code>localhost:8000</code> and
+<code>127.0.0.1:8000</code>, and that anything else needs a manifest change and a rebuild.</li>
+<li><strong>AC4</strong> — <em>Given</em> I save a new URL, <em>when</em> the panel reloads data, <em>then</em> the
+cached data from the previous backend is <strong>discarded</strong>, not revalidated.</li>
+<li><strong>AC5</strong> — <em>Given</em> I click Reset to defaults, <em>when</em> it completes, <em>then</em> every
+setting returns to its default and the cache is cleared.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[EXT]</strong> User edits the URL; the panel validates the scheme.</li>
+<li><strong>[EXT]</strong> Test issues a raw <code>fetch</code> to <code>&lt;draft URL&gt;/health</code> — deliberately
+the draft URL, since the shared client reads the saved one.</li>
+<li><strong>[EXT]</strong> Save writes to <code>chrome.storage.local</code>, clears the query cache, and
+the worker's storage listener picks the change up.</li>
+</ol>
+<p><strong>Alternative Flow</strong> — <strong>A1</strong> Invalid URL: Save and Test are disabled and the
+field is marked invalid.</p>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No response</td>
+<td>&quot;No response — backend not running, or origin not permitted.&quot; Both causes look identical to the browser, so both are named</td>
+</tr>
+<tr>
+<td>Non-2xx</td>
+<td>The status code is shown</td>
+</tr>
+<tr>
+<td>Origin not in <code>host_permissions</code></td>
+<td>Amber warning (AC3)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — Settings persist per device. The backend never learns
+about them.</p>
+<p><strong>Dependencies</strong> — None.</p>
+<hr>
+<h3 id="us-16--have-replied-mail-retire-itself">US-16 · Have replied mail retire itself</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ID</strong></td>
+<td>US-16</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>P1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>
+As a <strong>user</strong> who has answered an email, I want it to leave the Inbox view, so
+that the list shows only what still needs me.</p>
+<p><strong>Preconditions</strong> — A connected account; a processed email whose thread I have
+since replied on.</p>
+<p><strong>Acceptance Criteria</strong></p>
+<ul>
+<li><strong>AC1</strong> — <em>Given</em> I reply on a processed thread, <em>when</em> the next poll runs,
+<em>then</em> that email is stamped as replied.</li>
+<li><strong>AC2</strong> — <em>Given</em> an email is stamped replied, <em>when</em> I open the Inbox tab,
+<em>then</em> it is no longer listed.</li>
+<li><strong>AC3</strong> — <em>Given</em> I typed the reply <strong>by hand</strong> instead of using the draft,
+<em>when</em> the poll runs, <em>then</em> it is stamped just the same — detection is based
+on sent mail, not on our draft.</li>
+<li><strong>AC4</strong> — <em>Given</em> an email is stamped replied, <em>when</em> I open the Logs tab,
+<em>then</em> the record is still there with its original outcome.</li>
+<li><strong>AC5</strong> — <em>Given</em> an email is stamped replied, <em>when</em> I look at the Dashboard,
+<em>then</em> its original status still counts — replying does not rewrite what our
+processing did.</li>
+</ul>
+<p><strong>Main Flow</strong></p>
+<ol>
+<li><strong>[GMAIL]</strong> User sends a reply on the thread.</li>
+<li><strong>[BE]</strong> Next poll lists sent thread ids since the watermark.</li>
+<li><strong>[BE]</strong> Stamps <code>replied_at</code> on every matching <code>match_log</code>.</li>
+<li><strong>[EXT]</strong> The next inbox query excludes it (<code>include_replied</code> defaults false).</li>
+</ol>
+<p><strong>Alternative Flow</strong> — <strong>A1</strong> Reply sent from another client/device: still
+detected, because detection reads the mailbox, not the app.</p>
+<p><strong>Error Cases</strong></p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sweep fails</td>
+<td><strong>Swallowed and logged.</strong> Bookkeeping must never abort a poll — an email lingering one more interval is far better than new mail not being fetched</td>
+</tr>
+<tr>
+<td>Reply sent between polls</td>
+<td>Caught by the next sweep; the window overlaps deliberately</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Post Conditions</strong> — <code>replied_at</code> is set; <code>status</code> is unchanged; the row leaves
+the Inbox view but is retained everywhere else.</p>
+<p><strong>Dependencies</strong> — US-08.</p>
+<hr>
+<h2 id="-story-dependency-graph">🛠 Story dependency graph</h2>
+<pre class="hljs"><code><div>US-15 (backend URL) ─── independent, unblocks everything in practice
+US-01 (connect) ──┬── US-02 (status/disconnect)
+                  ├── US-12 (logs)
+                  └── US-13 (dashboard)
+US-03 (add rule) ─┬── US-04 (quick add)
+                  ├── US-05 (import)
+                  ├── US-06 (edit)
+                  └── US-07 (delete)
+US-01 + US-03 ────── US-08 (process) ──┬── US-09 (read summary) ── US-10 (open draft)
+                                       ├── US-11 (rescan)
+                                       ├── US-14 (badge/notify)
+                                       └── US-16 (retire replied)
+</div></code></pre>
+<hr>
+<h1 id="8-user-flows">8. User Flows</h1>
+<h2 id="-flow-1--first-time-setup">👤 Flow 1 — First-time setup</h2>
+<pre class="hljs"><code><div>Install extension
+      │
+      ▼
+Start backend  ──► not running? ──► Settings ▸ Test ──► &quot;No response&quot;
+      │
+      ▼
+Open Gmail ▸ click toolbar icon ──► side panel opens
+      │
+      ▼
+Settings ▸ Connect Gmail
+      │
+      ▼
+Google consent (new tab) ──► &quot;unverified app&quot;? ──► Advanced ▸ Go to… (expected in Testing mode)
+      │
+      ▼
+&quot;Gmail connected&quot;  ──► close tab
+      │
+      ▼
+Panel shows Connected + four tabs
+      │
+      ▼
+Whitelist ▸ add your first sender
+      │
+      ▼
+Wait one poll interval (60s) ──► Inbox shows the email + summary
+                                 Gmail shows the draft on the thread
+</div></code></pre>
+<p><strong>If the Inbox stays empty:</strong> open <strong>Logs</strong>. The sender is almost certainly not
+whitelisted — skipped rows record exactly that.</p>
+<hr>
+<h2 id="-flow-2--daily-use">👤 Flow 2 — Daily use</h2>
+<pre class="hljs"><code><div>Badge shows &quot;3&quot;
+      │
+      ▼
+Click icon ▸ Inbox tab (badge clears)
+      │
+      ▼
+Expand an email
+      │
+      ├── Read overview, key points, action items
+      │
+      ▼
+Click &quot;Check draft&quot; ──► Gmail opens on that thread
+      │
+      ├── Draft looks right ──► edit lightly ──► Send        ─┐
+      ├── Draft is wrong    ──► rewrite or delete it          │
+      └── Reply by hand ignoring the draft                    │
+                                                              ▼
+                                          Next poll stamps it replied
+                                                              │
+                                                              ▼
+                                          Email leaves the Inbox view
+                                          (still visible in Logs)
+</div></code></pre>
+<hr>
+<h2 id="-flow-3--whitelisting-the-sender-you-are-reading">👤 Flow 3 — Whitelisting the sender you are reading</h2>
+<pre class="hljs"><code><div>Reading a thread in Gmail
+      │
+      ▼
+Open panel ▸ Whitelist tab
+      │
+      ▼
+Suggestion row shows that thread's sender
+      │
+      ▼
+Click it ──► the address fills the input (not submitted)
+      │
+      ▼
+Check the inferred type   email → just this person
+                          domain → EVERYONE at that domain
+      │
+      ▼
+Add ──► 201, rule active
+      │
+      ▼
+Want their earlier mail handled too?
+      │
+      ├── No  ──► done; future mail is processed
+      └── Yes ──► Rescan ──► 202 ──► watch Logs
+</div></code></pre>
+<hr>
+<h2 id="-flow-4--data-flow-one-whitelisted-email-end-to-end">🛠 Flow 4 — Data flow: one whitelisted email, end to end</h2>
+<pre class="hljs"><code><div> GMAIL                BACKEND                                       LLM         DB
+   │
+   │  messages.list(after=watermark, max=25)
+   │◄────────────────── poller
+   │  ids ─────────────► buffer
+   │  messages.get(id)
+   │◄──────────────────
+   │  payload ─────────► parse → InboundEmailEvent
+                              │
+                         worker.receive()
+                              │
+                         sanitize_sender ──► invalid? drop (warning only)
+                              │
+                         dedupe on gmail_message_id ──────────────────► SELECT
+                              │
+                         create MatchLog (pending) ───────────────────► INSERT
+                              │
+                         MatcherTool.match (60s TTL cache) ──────────► SELECT
+                              │
+                    ┌─────────┴──────────┐
+              no match                 match
+                    │                    │
+        status=SKIPPED               status=PROCESSING ──────────────► UPDATE
+        &quot;Sender not on whitelist&quot;        │
+        ■ zero LLM cost                  │
+                                    summarize ──────────────► Groq ──► (fail) Gemini
+                                         │◄─── SummarizationResult
+                                         │
+                                    persist summary_json ───────────► UPDATE  ★ first
+                                         │
+                                    route ──────────────────► Groq ──► Gemini ──► mock
+                                         │◄─── template_id, extracted_data, confidence
+                                         │
+                                    confidence &lt; 0.6? ──► GENERAL_GREETING, used_fallback
+                                         │
+                                    compose ────────────────► Groq ──► Gemini
+                                         │◄─── draft text (cleaned)   (no mock; falls
+                                         │                             back to template)
+                                    store GeneratedDraft v1 ────────► INSERT  ★ second
+                                         │
+   │  drafts.create(raw, threadId,       │
+   │                In-Reply-To,         │
+   │                References)          │
+   │◄────────────────────────────────────┘
+   │  draft id ─────────► store gmail_draft_id ─────────────────────► UPDATE  ★ third
+                              │
+                         status=COMPLETED + processing_ms ──────────► UPDATE
+</div></code></pre>
+<p><strong>★ The ordering is deliberate.</strong> Summary before draft, draft before Gmail. The
+generated text is the expensive artefact and must survive Gmail being
+unreachable; the reverse order risks an orphan draft in the mailbox with no row
+pointing at it.</p>
+<hr>
+<h2 id="-flow-5--data-flow-panel-read-path">🛠 Flow 5 — Data flow: panel read path</h2>
+<pre class="hljs"><code><div>Side panel (open)                     Backend                    SQLite
+      │
+      │ every 30s: GET /auto-reply/inbox?page=1&amp;page_size=25
+      │────────────────────────────────►│
+      │                                 │ WHERE status != skipped
+      │                                 │   AND replied_at IS NULL
+      │                                 │ selectinload(drafts)   ← one extra
+      │                                 │────────────────────────► query, not N
+      │◄────────────────────────────────│
+      │ items[] each carrying: log + summary + latest_draft + draft_count
+      │
+      ▼
+ Render cards ──► expand ──► SummaryView + DraftSection
+                                  │
+                                  └─► window.open(gmail thread url)
+</div></code></pre>
+<pre class="hljs"><code><div>Service worker (panel closed)
+      │
+      │ chrome.alarms fires (≥1 min)
+      ▼
+ read settings + lastSeenAt from chrome.storage   ← cold start every time
+      │
+      │ GET /auto-reply/inbox?since=&lt;lastSeenAt&gt;     (plain fetch, no axios)
+      ▼
+ setBadgeText(total)
+      │
+      └─ total &gt; highWaterMark &amp;&amp; notificationsEnabled ──► notify, advance mark
+</div></code></pre>
+<hr>
+<h2 id="-flow-6--failure-and-recovery-paths">🛠 Flow 6 — Failure and recovery paths</h2>
+<pre class="hljs"><code><div>                    ┌─────────────────────────────┐
+                    │  _execute_core throws       │
+                    └──────────────┬──────────────┘
+                                   │
+              ┌────────────────────┴────────────────────┐
+      SummarizationError                        any other Exception
+              │                                          │
+      retryable AND retry_count &lt; 3?             retry_count &lt; 3?
+         │            │                            │           │
+        yes           no                          yes          no
+         │            │                            │           │
+      re-raise    status=FAILED                re-raise   status=FAILED
+         │        &quot;Summarization error: …&quot;         │       &quot;Internal error: …&quot;
+         ▼                                         ▼
+   ┌──────────────────────────────────────────────────────┐
+   │  Retry queue — exponential backoff 1s, 2s, 4s        │
+   │  max 3 attempts, then dropped with an error log      │
+   └──────────────────────────────────────────────────────┘
+
+  Gmail draft creation failure is NOT in this diagram — it is swallowed.
+  Status stays COMPLETED, gmail_draft_id is null, and the panel says so.
+  Rationale: the LLM has already been paid for; re-running would re-bill it.
+</div></code></pre>
+<hr>
+<h1 id="9-technical-notes">9. Technical Notes</h1>
+<h2 id="-design-decisions-and-their-reasons">🛠 Design decisions and their reasons</h2>
+<h3 id="d1--the-extension-never-talks-to-gmail">D1 — The extension never talks to Gmail</h3>
+<p><strong>Decision.</strong> All Gmail access is server-side. The extension requests no Gmail
+permissions and holds no Google tokens.</p>
+<p><strong>Why.</strong> The backend must poll and draft while the panel is closed, so it needs
+credentials regardless. Giving the extension a second copy would double the
+attack surface for no capability gain, and would force every user through
+Chrome's Gmail-permission prompt. It also means reinstalling the extension never
+touches your Google account.</p>
+<p><strong>Cost.</strong> The panel cannot show anything the backend has not already fetched.</p>
+<hr>
+<h3 id="d2--chromesidepanel-not-an-injected-dom-sidebar">D2 — <code>chrome.sidePanel</code>, not an injected DOM sidebar</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Native side panel</th>
+<th>Injected sidebar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Breaks when Gmail's DOM changes</td>
+<td>Never</td>
+<td>Constantly</td>
+</tr>
+<tr>
+<td>CSS collisions</td>
+<td>None</td>
+<td>Needs Shadow DOM + reset</td>
+</tr>
+<tr>
+<td>Survives Gmail SPA navigation</td>
+<td>Automatic</td>
+<td>Needs a <code>MutationObserver</code></td>
+</tr>
+<tr>
+<td><code>chrome.*</code> API access</td>
+<td>Direct</td>
+<td>Via message passing</td>
+</tr>
+<tr>
+<td>Overlays Gmail's content</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why it applies here specifically.</strong> Because polling is server-side, the panel
+mostly renders backend data. It barely needs Gmail's DOM, so the main
+justification for DOM injection evaporates. Requires Chrome 114+.</p>
+<hr>
+<h3 id="d3--polling-not-gmail-push">D3 — Polling, not Gmail push</h3>
+<p><strong>Decision.</strong> An interval poll with an in-memory buffer.</p>
+<p><strong>Why.</strong> Push (<code>users.watch</code> + Pub/Sub) needs a public HTTPS endpoint and a
+Google Cloud Pub/Sub topic — impossible for a localhost MVP. The buffer exists
+because the worker calls <code>receive()</code> in a tight loop; calling Gmail at that rate
+would exhaust quota in minutes.</p>
+<p><strong>Cost.</strong> Latency up to one interval. Quota spent even when nothing arrived.</p>
+<hr>
+<h3 id="d4--summary-persisted-as-json-not-normalised">D4 — Summary persisted as JSON, not normalised</h3>
+<p><strong>Decision.</strong> <code>match_logs.summary_json</code> holds the whole <code>SummarizationResult</code>.</p>
+<p><strong>Why.</strong> It is read as a whole and never queried by field, and its shape is owned
+by a Pydantic model that would otherwise force a schema migration on every new
+field. <code>model_dump(mode=&quot;json&quot;)</code> is used so datetimes and enums become
+JSON-native.</p>
+<p><strong>Cost.</strong> No SQL querying inside a summary; readers must handle null.</p>
+<hr>
+<h3 id="d5--replied_at-is-a-column-not-an-executionstatus">D5 — <code>replied_at</code> is a column, not an <code>ExecutionStatus</code></h3>
+<p><strong>Decision.</strong> Replying is recorded separately from processing status.</p>
+<p><strong>Why.</strong> <code>status</code> records how <em>our</em> processing ended and stays meaningful
+afterwards. A reply is a later, independent fact. Folding it into the enum would
+overwrite the outcome and skew every status breakdown that counts it.</p>
+<hr>
+<h3 id="d6--rescan-is-explicit-never-automatic">D6 — Rescan is explicit, never automatic</h3>
+<p><strong>Decision.</strong> Only <code>POST /api/v1/whitelist/rescan</code> starts a sweep.</p>
+<p><strong>Why.</strong> A sweep re-fetches from Gmail, spends LLM calls and files <strong>real drafts
+in the user's mailbox</strong>. That is far too much to happen as a side effect of
+typing an address into a form — and a bulk import of 300 rules would fire it
+against the entire lookback window at once.</p>
+<p><strong>Implementation.</strong> A boolean flag, not a queue of ids, so repeated clicks
+collapse into one sweep. The sweep re-reads the whitelist when it <em>runs</em>, so it
+always uses current rules rather than a snapshot from request time.</p>
+<hr>
+<h3 id="d7--the-draft-text-is-not-shown-in-the-panel">D7 — The draft text is not shown in the panel</h3>
+<p><strong>Decision.</strong> <code>DraftSection</code> shows that a draft exists, which template was used
+and which provider wrote it — but never the text.</p>
+<p><strong>Why.</strong> The draft is a real Gmail draft. A second editable copy in the panel
+invites editing the one that is never sent. Reducing the panel's job to &quot;say a
+draft was made, and get you to it&quot; removes an entire class of confusion.</p>
+<hr>
+<h3 id="d8--errors-degrade-in-layers">D8 — Errors degrade in layers</h3>
+<pre class="hljs"><code><div>Summarization :  Groq → Gemini → typed error → retry queue → FAILED
+Routing       :  Groq → Gemini → mock (only when no keys) → schema fallback
+                                                          → confidence fallback
+Drafting      :  Groq → Gemini → static template  (never fails)
+Gmail draft   :  swallowed — the row completes without a draft link
+Reply sweep   :  swallowed — bookkeeping must not abort a poll
+</div></code></pre>
+<p><strong>The rule:</strong> the further a failure is from the expensive work, the more
+aggressively it is swallowed. Losing a summary is worth a retry; losing a draft
+<em>link</em> is not worth re-billing three LLM calls.</p>
+<hr>
+<h3 id="d9--two-error-shapes-normalised-once">D9 — Two error shapes, normalised once</h3>
+<p>The backend genuinely returns two shapes:</p>
+<pre class="hljs"><code><div>Summarization / routing / validation → { request_id, code, message, retryable }
+auto_reply routers (HTTPException)   → { detail: &quot;…&quot; }
+</div></code></pre>
+<p><code>services/errors.ts</code> collapses both into one <code>ApiError</code>. Retry policy reads the
+backend's own <code>retryable</code> flag rather than inventing a client-side rule — the
+backend already decided.</p>
+<hr>
+<h3 id="d10--confidence-threshold-at-06">D10 — Confidence threshold at 0.6</h3>
+<p>Below <code>CONFIDENCE_THRESHOLD</code>, routing degrades to <code>GENERAL_GREETING</code> and
+<code>used_fallback</code> is set. The frontend mirrors the constant so meters colour
+against the real value rather than a hardcoded guess. Both must be changed
+together.</p>
+<hr>
+<h3 id="d11--no-tabs-permission">D11 — No <code>tabs</code> permission</h3>
+<p>&quot;Check draft&quot; uses <code>window.open</code>, which needs no permission. Reusing the already
+open Gmail tab would require <code>tabs</code>, which re-prompts <strong>every installed user</strong> on
+update with a &quot;Read your browsing history&quot; warning. Not worth it for a
+convenience link.</p>
+<hr>
+<h3 id="d12--all-in-the-gmail-deep-link">D12 — <code>#all/</code> in the Gmail deep link</h3>
+<p><code>#inbox/&lt;id&gt;</code> lands on an empty view when the thread has been archived; <code>#all/</code>
+resolves either way. <code>/u/0/</code> is the only account selector Gmail supports —
+addressing by email address appears to work but was always undocumented and
+Google broke it in April 2026 (a fragment on such a URL fails with &quot;Temporary
+Error (404)&quot;). Do not reintroduce it.</p>
+<hr>
+<h3 id="d13--synchronous-orchestrator-dispatched-to-a-thread">D13 — Synchronous orchestrator dispatched to a thread</h3>
+<p><code>EmailOrchestrator.run()</code> is synchronous and makes two blocking LLM calls.
+Called directly it would block the event loop for several seconds, freezing the
+background worker <em>and</em> every API request the panel makes, since they share one
+loop. <code>asyncio.to_thread</code> isolates it.</p>
+<hr>
+<h3 id="d14--cors-is--deliberately-and-temporarily">D14 — CORS is <code>*</code>, deliberately and temporarily</h3>
+<p>Unpacked extensions get a new origin on every reload, so the origin cannot be
+pinned during development. There is no auth and no cookie to protect, and
+browsers reject <code>*</code> together with credentials — hence
+<code>allow_credentials=False</code>. <strong>Both must be tightened before any deployment.</strong></p>
+<hr>
+<h2 id="-api-reference-current">🛠 API reference (current)</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/health</code></td>
+<td><code>{&quot;status&quot;:&quot;ok&quot;}</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/summaries</code></td>
+<td>Summarize a message or thread</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/drafts</code></td>
+<td>Route + draft from a <code>SummarizationResult</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/whitelist</code></td>
+<td><code>?page</code>, <code>?page_size</code> (≤100), <code>?entry_type</code></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/whitelist</code></td>
+<td><code>{ value }</code> → <strong>201</strong></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/whitelist/{id}</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/v1/whitelist/{id}</code></td>
+<td>Partial; <strong>400</strong> on empty body</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/whitelist/{id}</code></td>
+<td>Soft delete → <strong>204</strong></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/whitelist/import</code></td>
+<td>multipart CSV/XLSX → per-row report</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/whitelist/rescan</code></td>
+<td>→ <strong>202</strong></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/auto-reply/inbox</code></td>
+<td><code>?since</code>, <code>?page</code>, <code>?page_size</code>, <code>?include_skipped</code>, <code>?include_replied</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/auto-reply/logs</code></td>
+<td><code>?sender_filter</code>, <code>?status_filter</code>, <code>?date_from</code>, <code>?date_to</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/auto-reply/status/{log_id}</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/auto-reply/drafts/{draft_id}</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/auto-reply/logs/{log_id}/drafts</code></td>
+<td>Version history, oldest first</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/auto-reply/dashboard/summary</code></td>
+<td><code>?since_hours</code> (1–8760, default 24)</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/v1/gmail/incoming</code></td>
+<td>Push an event → <strong>202</strong>; <strong>429</strong> if the queue is full</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/v1/gmail/auth/start</code> · <code>/callback</code> · <code>/status</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/v1/gmail/auth/</code></td>
+<td>→ <strong>204</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Interactive docs at <code>/docs</code> while the backend runs.</p>
+<h3 id="status-codes-the-ui-handles">Status codes the UI handles</h3>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Source</th>
+<th>UI response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>400</td>
+<td>empty <code>PUT</code> body</td>
+<td>Prevented client-side; Save stays disabled</td>
+</tr>
+<tr>
+<td>404</td>
+<td>entry / draft / log not found</td>
+<td>Refresh the list</td>
+</tr>
+<tr>
+<td>409</td>
+<td>duplicate whitelist value</td>
+<td>Inline field error, input preserved</td>
+</tr>
+<tr>
+<td>413</td>
+<td>input too large</td>
+<td>Non-retryable notice</td>
+</tr>
+<tr>
+<td>422</td>
+<td>validation</td>
+<td>Show <code>detail</code> verbatim</td>
+</tr>
+<tr>
+<td>429</td>
+<td>push queue full</td>
+<td>Toast, back off</td>
+</tr>
+<tr>
+<td>502</td>
+<td><code>routing_unavailable</code></td>
+<td>Retry button</td>
+</tr>
+<tr>
+<td>503</td>
+<td>not configured</td>
+<td>Banner: provider or OAuth not configured</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="-configuration-reference">🛠 Configuration reference</h2>
+<p>Set in <code>backend/.env</code>. Defaults live in <code>backend/src/config.py</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GROQ_API_KEY</code></td>
+<td>—</td>
+<td>Primary LLM. Without it, routing uses <code>mock</code> and drafting uses static templates</td>
+</tr>
+<tr>
+<td><code>GROQ_MODEL</code></td>
+<td>—</td>
+<td>Required alongside the key — no default model</td>
+</tr>
+<tr>
+<td><code>GEMINI_API_KEY</code> / <code>GEMINI_MODEL</code></td>
+<td>— / <code>gemini-2.5-flash</code></td>
+<td>Optional fallback</td>
+</tr>
+<tr>
+<td><code>GOOGLE_CLIENT_ID</code> / <code>_SECRET</code></td>
+<td>—</td>
+<td>Required for Gmail. Add by hand — not in <code>.env.example</code></td>
+</tr>
+<tr>
+<td><code>GOOGLE_REDIRECT_URI</code></td>
+<td><code>http://localhost:8000/api/v1/gmail/auth/callback</code></td>
+<td>Must match the registered URI <strong>exactly</strong>, including port</td>
+</tr>
+<tr>
+<td><code>GMAIL_POLL_INTERVAL_SECONDS</code></td>
+<td><code>60</code></td>
+<td>≥15. Spends Gmail quota</td>
+</tr>
+<tr>
+<td><code>GMAIL_POLL_QUERY</code></td>
+<td><code>in:inbox -in:chats</code></td>
+<td>Any Gmail search expression</td>
+</tr>
+<tr>
+<td><code>GMAIL_INITIAL_LOOKBACK_MINUTES</code></td>
+<td><code>60</code></td>
+<td>How far back the <strong>first</strong> poll looks</td>
+</tr>
+<tr>
+<td><code>GMAIL_MAX_RESULTS_PER_POLL</code></td>
+<td><code>25</code></td>
+<td>1–100. Stops a backlog stampeding</td>
+</tr>
+<tr>
+<td><code>CONFIDENCE_THRESHOLD</code></td>
+<td><code>0.6</code></td>
+<td>Below this, routing degrades to the safe template</td>
+</tr>
+<tr>
+<td><code>WHITELIST_CACHE_TTL_SECONDS</code></td>
+<td><code>60</code></td>
+<td>Explains the stale-match window</td>
+</tr>
+<tr>
+<td><code>WHITELIST_RESCAN_LOOKBACK_HOURS</code></td>
+<td><code>24</code></td>
+<td>0 disables rescanning</td>
+</tr>
+<tr>
+<td><code>AUTO_REPLY_MAX_RETRIES</code></td>
+<td><code>3</code></td>
+<td>Transient failures only</td>
+</tr>
+<tr>
+<td><code>AUTO_REPLY_RETRY_DELAY_SECONDS</code></td>
+<td><code>1.0</code></td>
+<td>Base for exponential backoff</td>
+</tr>
+<tr>
+<td><code>SUMMARIZER_MAX_MESSAGES</code></td>
+<td><code>20</code></td>
+<td>Per request</td>
+</tr>
+<tr>
+<td><code>SUMMARIZER_MAX_NORMALIZED_CHARS</code></td>
+<td><code>100000</code></td>
+<td>Beyond this, input is truncated</td>
+</tr>
+<tr>
+<td><code>BULK_IMPORT_MAX_ROWS</code></td>
+<td><code>10000</code></td>
+<td>Per file</td>
+</tr>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td><code>sqlite+aiosqlite:///./email_assistant.db</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Settings are cached; <strong>restart the backend after editing <code>.env</code>.</strong></p>
+<hr>
+<h2 id="-running-and-testing">🛠 Running and testing</h2>
+<pre class="hljs"><code><div><span class="hljs-comment"># Backend</span>
+<span class="hljs-built_in">cd</span> backend
+<span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span>        <span class="hljs-comment"># then add GROQ_API_KEY, GROQ_MODEL, Google creds</span>
+uv <span class="hljs-built_in">sync</span> --group dev
+uv run uvicorn src.main:app --reload    <span class="hljs-comment"># keep it on port 8000</span>
+
+<span class="hljs-comment"># Frontend</span>
+<span class="hljs-built_in">cd</span> frontend
+npm install
+npm run dev                 <span class="hljs-comment"># writes dist/ and watches</span>
+<span class="hljs-comment"># chrome://extensions ▸ Developer mode ▸ Load unpacked ▸ frontend/dist</span>
+</div></code></pre>
+<p><strong>Tests</strong></p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> backend
+uv run pytest tests/auto_reply tests/test_models.py
+</div></code></pre>
+<p>Tests use fake model providers and never call an external API. The gated live
+provider check needs real keys:</p>
+<pre class="hljs"><code><div>RUN_LIVE_MODEL_TESTS=1 uv run pytest -m live
+</div></code></pre>
+<blockquote>
+<p><strong>Known issue.</strong> <code>uv run pytest</code> over the whole suite fails to <em>collect</em>
+<code>tests/test_api.py</code> and <code>tests/test_service.py</code> — two <code>conftest.py</code> files
+collide on module name. Run the paths above until that is untangled.</p>
+</blockquote>
+<hr>
+<h1 id="10-limitations">10. Limitations</h1>
+<h2 id="-limitations-you-will-notice">👤 Limitations you will notice</h2>
+<table>
+<thead>
+<tr>
+<th>Limitation</th>
+<th>What it means for you</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>One Gmail account</strong></td>
+<td>Connecting a second replaces the first.</td>
+</tr>
+<tr>
+<td><strong>Only whitelisted senders</strong></td>
+<td>Everything else is ignored, by design. If the Inbox tab is empty, check Logs.</td>
+</tr>
+<tr>
+<td><strong>Up to a minute of delay</strong></td>
+<td>Polling is every 60 seconds by default.</td>
+</tr>
+<tr>
+<td><strong>A new rule is not retroactive</strong></td>
+<td>Press <strong>Rescan</strong> for mail that already arrived (last 24 h only).</td>
+</tr>
+<tr>
+<td><strong>The draft cannot be edited in the panel</strong></td>
+<td>Edit it in Gmail, where you will send it.</td>
+</tr>
+<tr>
+<td><strong>No regenerate button</strong></td>
+<td>If a draft is wrong, rewrite it in Gmail.</td>
+</tr>
+<tr>
+<td><strong>Mail with no text fails</strong></td>
+<td>Image-only mail, calendar invites and some HTML newsletters show up red in Logs.</td>
+</tr>
+<tr>
+<td><strong>Three reply styles only</strong></td>
+<td>Tech support, pricing enquiry, general greeting.</td>
+</tr>
+<tr>
+<td><strong>Static fallback is Vietnamese</strong></td>
+<td>When the AI cannot write the reply, the canned sentence is Vietnamese regardless of the email's language.</td>
+</tr>
+<tr>
+<td><strong>Multi-account Chrome users</strong></td>
+<td>&quot;Check draft&quot; opens whichever Google account signed in first, which may not be the connected one.</td>
+</tr>
+<tr>
+<td><strong>Quick-add depends on Gmail's HTML</strong></td>
+<td>Google can change it without notice, and the suggestion silently stops appearing.</td>
+</tr>
+<tr>
+<td><strong>Chrome only, 114+</strong></td>
+<td>The side panel API requires it.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-limitations-that-constrain-development">🛠 Limitations that constrain development</h2>
+<h3 id="security--read-before-deploying-anywhere">Security — read before deploying anywhere</h3>
+<p>This runs on <code>localhost</code>. Three things make it unsafe elsewhere:</p>
+<ol>
+<li><strong>Every API endpoint is unauthenticated.</strong> Anyone who can reach the URL can
+read every stored summary, edit the whitelist, or disconnect the account.</li>
+<li><strong>The Gmail refresh token is stored in plaintext</strong> in <code>email_assistant.db</code>.
+It grants continuing mailbox access until revoked. Treat that file as a
+secret — it is gitignored, and must never be copied off the machine.</li>
+<li><strong>CORS is <code>allow_origins=[&quot;*&quot;]</code></strong> (see D14).</li>
+</ol>
+<p>Revoke access at any time, independently of this app:
+<a href="https://myaccount.google.com/permissions">https://myaccount.google.com/permissions</a></p>
+<h3 id="scale">Scale</h3>
+<table>
+<thead>
+<tr>
+<th>Constraint</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Single worker only</strong></td>
+<td>The whitelist match cache is per-process. <code>uvicorn --workers 2</code> makes caches diverge for up to 60 s.</td>
+</tr>
+<tr>
+<td><strong>Retry queue is in memory</strong></td>
+<td>A restart loses pending retries.</td>
+</tr>
+<tr>
+<td><strong>Rescan flag is module state</strong></td>
+<td>Same — it does not survive a restart, and does not work across processes.</td>
+</tr>
+<tr>
+<td><strong>SQLite</strong></td>
+<td>Fine for one user; no concurrent-writer story.</td>
+</tr>
+<tr>
+<td><strong>Inbox <code>total</code> is counted in Python</strong></td>
+<td>The result set is materialised to be counted. Fine at MVP volume; replace with <code>COUNT</code> before it is not.</td>
+</tr>
+<tr>
+<td><strong>Panel cache is not persisted</strong></td>
+<td>Closing the side panel discards TanStack's in-memory cache; reopening refetches.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cost">Cost</h3>
+<p>Each whitelisted email costs <strong>three LLM calls</strong> (summarize, route, compose).
+Senders matching no rule cost nothing. A free-tier Groq key will hit rate limits
+on a busy inbox — keep the whitelist narrow while testing. There is no
+rate-limit-aware backoff in the pipeline today, and
+<code>status_breakdown.rate_limited</code> can never be set.</p>
+<h3 id="known-dead-code-and-gaps">Known dead code and gaps</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>StatusBreakdown.rate_limited</code></td>
+<td>Always <code>0</code> — no such <code>ExecutionStatus</code> member</td>
+</tr>
+<tr>
+<td><code>GeneratedDraft</code> versioning</td>
+<td>Schema supports it; nothing creates version 2</td>
+</tr>
+<tr>
+<td><code>MatchLog.retry_count</code>, <code>sender_name</code>, <code>gmail_thread_id</code></td>
+<td>Exist on the model, omitted from the logs response</td>
+</tr>
+<tr>
+<td><code>extracted_data</code></td>
+<td>Stored, never exposed by the draft API</td>
+</tr>
+<tr>
+<td>Whole-suite <code>pytest</code> collection</td>
+<td>Broken by colliding <code>conftest.py</code> module names</td>
+</tr>
+<tr>
+<td>Frontend <code>blockedReason</code> on tabs</td>
+<td>All <code>null</code> now; the mechanism remains for future gaps</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="11-future-improvements">11. Future Improvements</h1>
+<p>Ordered by the value-to-effort ratio as the system stands today.</p>
+<h2 id="near-term">Near term</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Improvement</th>
+<th>Why it matters</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Reclassify body-less mail as <code>SKIPPED</code></strong></td>
+<td>A live inbox shows red <code>FAILED</code> rows for calendar invites and image-only mail, which reads as a broken system</td>
+<td><code>InvalidEmailContentError</code> is already non-retryable; only the terminal status changes</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong><code>POST /logs/{id}/regenerate</code></strong></td>
+<td>The single most-requested missing button. Versioning already exists in the schema</td>
+<td>Reuses <code>_execute_core</code>; increments <code>version</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Surface capability flags on <code>/health</code></strong></td>
+<td>Silent <code>mock</code> output is the most confusing failure mode in the product</td>
+<td>Return <code>has_groq</code> / <code>has_gemini</code> / <code>has_google_oauth</code>; the panel warns</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Fix whole-suite test collection</strong></td>
+<td>Backend changes are currently made against a partially-collected suite</td>
+<td>Rename or namespace the colliding <code>conftest.py</code> files</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Translate the static fallback templates</strong></td>
+<td>An English email that falls back gets a Vietnamese sentence</td>
+<td>Key the catalog by language, defaulting to <code>summary.language</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Real <code>rate_limited</code> status</strong></td>
+<td>Free-tier keys hit limits routinely and it currently looks like a generic failure</td>
+<td>Add the enum member; the dashboard field is already waiting</td>
+</tr>
+</tbody>
+</table>
+<h2 id="medium-term">Medium term</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Improvement</th>
+<th>Why it matters</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td><strong>Authentication on every endpoint</strong></td>
+<td>The first thing that must exist before this leaves localhost</td>
+<td><code>services/api/</code> mirrors routers 1:1, so the client change is one interceptor</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Encrypt tokens at rest</strong></td>
+<td>The refresh token is the crown jewel of this system</td>
+<td>Envelope encryption with a key outside the DB</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Split the whitelist flag in two</strong></td>
+<td>The list currently means both &quot;summarise&quot; and &quot;auto-draft&quot;, and those sets genuinely diverge — you would summarise your boss but never auto-reply to them</td>
+<td>Two booleans on <code>WhitelistEntry</code>, <strong>not</strong> two tables</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>User-defined templates</strong></td>
+<td>Three hardcoded categories will not survive real use</td>
+<td>Move <code>TEMPLATE_CATALOG</code> into the database</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Persist the retry queue</strong></td>
+<td>Restarts currently lose in-flight work</td>
+<td>A <code>pending_retries</code> table, drained on startup</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Generate frontend types from OpenAPI</strong></td>
+<td><code>types/api.ts</code> is hand-mirrored and will drift</td>
+<td>The mirroring comments already name every Python source</td>
+</tr>
+</tbody>
+</table>
+<h2 id="longer-term">Longer term</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Improvement</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>13</td>
+<td><strong>Gmail push (<code>users.watch</code> + Pub/Sub)</strong></td>
+<td>Removes polling latency and quota burn entirely — needs a public HTTPS endpoint</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>Multi-account and multi-user</strong></td>
+<td>Drop the unique <code>provider</code> constraint; give every whitelist entry and match log an owner. Larger than it looks</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>Shared cache (Redis)</strong></td>
+<td>Prerequisite for running more than one worker</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>Attachment understanding</strong></td>
+<td>Metadata is already carried; content is never read</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>Learning from edits</strong></td>
+<td>Diff the sent message against the generated draft to improve future drafts — the highest-value idea in this table, and the hardest</td>
+</tr>
+<tr>
+<td>18</td>
+<td><strong>Postgres</strong></td>
+<td>When SQLite's single-writer model becomes the bottleneck</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="12-glossary">12. Glossary</h1>
+<p>Terms are used consistently throughout this document and in the code.</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Whitelist</strong></td>
+<td>The set of rules deciding which senders are processed. One list; matching it means both &quot;summarise&quot; and &quot;draft a reply&quot;.</td>
+</tr>
+<tr>
+<td><strong>Entry / Rule</strong></td>
+<td>One whitelist row. Either an <strong>exact email</strong> rule or a <strong>domain</strong> rule.</td>
+</tr>
+<tr>
+<td><strong>Entry type</strong></td>
+<td><code>email</code> or <code>domain</code>, <strong>inferred</strong> from a leading <code>@</code> — never chosen from a dropdown.</td>
+</tr>
+<tr>
+<td><strong>Match</strong></td>
+<td>A sender satisfying a rule. Exact email always beats domain.</td>
+</tr>
+<tr>
+<td><strong>Match log</strong></td>
+<td>One row per inbound email ever seen, whatever happened to it. The unit the Logs tab lists.</td>
+</tr>
+<tr>
+<td><strong>Execution status</strong></td>
+<td><code>pending</code> · <code>processing</code> · <code>completed</code> · <code>failed</code> · <code>skipped</code>. How <em>our processing</em> ended.</td>
+</tr>
+<tr>
+<td><strong>Skipped</strong></td>
+<td>The sender matched no rule. The normal, intended outcome for most mail. Costs nothing.</td>
+</tr>
+<tr>
+<td><strong>Failed</strong></td>
+<td>Processing was attempted and did not finish. Most often an email with no readable text.</td>
+</tr>
+<tr>
+<td><strong>Replied</strong></td>
+<td>The user answered on this thread, detected from <strong>sent mail</strong> — so hand-typed replies count. Recorded separately from status, and retires the email from the Inbox view.</td>
+</tr>
+<tr>
+<td><strong>Summary</strong></td>
+<td>The structured <code>SummarizationResult</code>: overview, cited key points, action items, detected language. Stored as <code>summary_json</code>.</td>
+</tr>
+<tr>
+<td><strong>Key point</strong></td>
+<td>A claim from the summary, carrying the message ids it came from. Up to seven per summary.</td>
+</tr>
+<tr>
+<td><strong>Action item</strong></td>
+<td>A task from the summary, optionally with an owner and a deadline.</td>
+</tr>
+<tr>
+<td><strong>Truncated</strong></td>
+<td>The original was too long to read in full; some of it was not seen by the model.</td>
+</tr>
+<tr>
+<td><strong>Routing</strong></td>
+<td>The LLM step that classifies the email into a template and extracts fields.</td>
+</tr>
+<tr>
+<td><strong>Template</strong></td>
+<td>One of <code>TECH_SUPPORT</code>, <code>PRICING_INQUIRY</code>, <code>GENERAL_GREETING</code>.</td>
+</tr>
+<tr>
+<td><strong>Confidence score</strong></td>
+<td>The router's own certainty, 0–1. Below <code>0.6</code> the system degrades to the safe template.</td>
+</tr>
+<tr>
+<td><strong>Fallback (<code>used_fallback</code>)</strong></td>
+<td>True when the generic template was substituted — because validation failed or confidence was too low.</td>
+</tr>
+<tr>
+<td><strong>Drafting / Compose</strong></td>
+<td>The LLM step that writes the actual reply text, in the email's own language.</td>
+</tr>
+<tr>
+<td><strong>Draft</strong></td>
+<td>The generated reply. Stored in the database <strong>and</strong> filed in Gmail. Never sent.</td>
+</tr>
+<tr>
+<td><strong>Gmail draft id</strong></td>
+<td>Gmail's id for the filed draft. The <em>draft</em> id, not its message id — Gmail replaces the message and its id on every edit, so only this one stays valid.</td>
+</tr>
+<tr>
+<td><strong>Provider</strong></td>
+<td>Which model produced a result: <code>groq</code>, <code>gemini</code>, or <code>mock</code>.</td>
+</tr>
+<tr>
+<td><strong>Mock</strong></td>
+<td>A keyword-based router used when no API keys are configured. Lets the pipeline run end to end without spending quota. Reports a hardcoded confidence of <code>0.85</code>.</td>
+</tr>
+<tr>
+<td><strong>Poll</strong></td>
+<td>The backend asking Gmail for new mail. Default every 60 s.</td>
+</tr>
+<tr>
+<td><strong>Watermark (<code>last_polled_at</code>)</strong></td>
+<td>The instant the last poll started. Only mail after it is considered new.</td>
+</tr>
+<tr>
+<td><strong>Lookback</strong></td>
+<td>How far back the <em>first</em> poll after connecting looks. Default 60 minutes.</td>
+</tr>
+<tr>
+<td><strong>Rescan</strong></td>
+<td>An explicitly requested sweep re-examining recently skipped mail against current rules.</td>
+</tr>
+<tr>
+<td><strong>Retry queue</strong></td>
+<td>In-memory queue for transient failures, with exponential backoff, up to 3 attempts.</td>
+</tr>
+<tr>
+<td><strong>Side panel</strong></td>
+<td>The native Chrome panel that is the product's UI. Requires Chrome 114+.</td>
+</tr>
+<tr>
+<td><strong>Service worker</strong></td>
+<td>The extension's MV3 background script. Runs the badge and notifications; terminated after ~30 s idle.</td>
+</tr>
+<tr>
+<td><strong>Content script</strong></td>
+<td>The tiny read-only script on Gmail pages that notices which thread is open.</td>
+</tr>
+<tr>
+<td><strong>Badge</strong></td>
+<td>The count on the toolbar icon: emails processed since you last opened the Inbox tab.</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>The FastAPI service. The only component holding Google credentials.</td>
+</tr>
+<tr>
+<td><strong>Guardrails</strong></td>
+<td>Pure validation functions: address/domain validation, sender sanitization, import row checks, prompt-injection patterns.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><em>This document describes the current MVP only. Anything not listed under
+<a href="#6-feature-specifications">6. Feature Specifications</a> is not implemented — see
+<a href="#11-future-improvements">11. Future Improvements</a> for what is planned and
+<a href="#10-limitations">10. Limitations</a> for what is deliberately out of scope.</em></p>
+
+</body>
+</html>

@@ -9,13 +9,12 @@ from src.auto_reply.tools.whitelist_tool import WhitelistTool
 async def test_create_and_get_whitelist_api(override_get_db, db_session):
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         # Create
-        payload = {"value": "api@test.com", "priority": 10}
+        payload = {"value": "api@test.com"}
         resp = await client.post("/api/v1/whitelist", json=payload)
         
         assert resp.status_code == 201
         data = resp.json()
         assert data["value"] == "api@test.com"
-        assert data["priority"] == 10
         entry_id = data["id"]
         
         # Get

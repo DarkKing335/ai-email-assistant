@@ -1,7 +1,7 @@
 import pytest
 import logging
 
-from app.summarization.errors import (
+from src.summarization.errors import (
     ProviderConfigurationError,
     ProviderContentRejectedError,
     ProviderError,
@@ -9,8 +9,8 @@ from app.summarization.errors import (
     SummarizationContentRejectedError,
     SummarizationUnavailableError,
 )
-from app.summarization.models import GeneratedSummary, SummarizationRequest
-from app.summarization.service import SummarizationService
+from src.summarization.models import GeneratedSummary, SummarizationRequest
+from src.summarization.service import SummarizationService
 from conftest import FakeProvider
 
 

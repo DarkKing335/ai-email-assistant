@@ -74,7 +74,6 @@ class WhitelistTool:
         self,
         value: str,
         *,
-        priority: int = 0,
         created_by: str | None = None,
     ) -> WhitelistEntry:
         """Validate, check for duplicates, then persist a new entry."""
@@ -90,17 +89,12 @@ class WhitelistTool:
         if existing and not existing.is_active:
             # Reactivate instead of creating a new row
             logger.info("reactivating whitelist entry id=%d value=%s", existing.id, normalised)
-            return await self._repo.update(
-                existing,
-                is_active=True,
-                priority=priority,
-            )
+            return await self._repo.update(existing, is_active=True)
 
         entry_type = EntryType(entry_type_str)
         return await self._repo.create(
             entry_type=entry_type,
             value=normalised,
-            priority=priority,
             created_by=created_by,
         )
 

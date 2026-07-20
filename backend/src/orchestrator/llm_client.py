@@ -68,6 +68,75 @@ class LLMClient:
 
         raise LLMRoutingError("Tất cả provider thất bại -> " + " | ".join(errors))
 
+    # ----------------------------------------------------------------- Compose
+    def compose(
+        self, system_prompt: str, user_content: str, temperature: float = 0.3
+    ) -> Tuple[str, str]:
+        """
+        Sinh văn bản tự do (KHÔNG phải JSON) — dùng cho bước viết bản nháp.
+
+        Khác `route()` ở hai điểm: không ép response_format JSON, và temperature
+        > 0 để câu chữ tự nhiên thay vì lặp khuôn. Trả về (text, provider_name).
+
+        Không có mock: khi không có provider nào, caller (LLMDrafter) tự lùi về
+        template tĩnh — bịa ra một bản nháp giả sẽ tệ hơn là dùng template thật.
+        """
+        settings = get_settings()
+        errors: List[str] = []
+
+        if settings.has_groq:
+            try:
+                return self._compose_groq(system_prompt, user_content, temperature), "groq"
+            except Exception as e:  # noqa: BLE001 - gom lỗi để fallback
+                errors.append(f"groq: {e}")
+
+        if settings.has_gemini:
+            try:
+                return self._compose_gemini(system_prompt, user_content, temperature), "gemini"
+            except Exception as e:  # noqa: BLE001
+                errors.append(f"gemini: {e}")
+
+        raise LLMRoutingError(
+            "Không có provider nào cho việc soạn thảo -> " + (" | ".join(errors) or "chưa cấu hình API key")
+        )
+
+    def _compose_groq(self, system_prompt: str, user_content: str, temperature: float) -> str:
+        from groq import Groq
+
+        settings = get_settings()
+        client = Groq(api_key=settings.groq_api_key.get_secret_value())
+        resp = client.chat.completions.create(
+            model=settings.groq_model,
+            temperature=temperature,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_content},
+            ],
+        )
+        text = (resp.choices[0].message.content or "").strip()
+        if not text:
+            raise ValueError("Groq trả về nội dung rỗng.")
+        return text
+
+    def _compose_gemini(self, system_prompt: str, user_content: str, temperature: float) -> str:
+        from google import genai
+        from google.genai import types
+
+        settings = get_settings()
+        client = genai.Client(api_key=settings.gemini_api_key.get_secret_value())
+        resp = client.models.generate_content(
+            model=settings.gemini_model or "gemini-2.5-flash",
+            contents=user_content,
+            config=types.GenerateContentConfig(
+                system_instruction=system_prompt,
+                temperature=temperature,
+            ),
+        )
+        text = (resp.text or "").strip()
+        if not text:
+            raise ValueError("Gemini trả về nội dung rỗng.")
+        return text
+
     # -------------------------------------------------------------------- Groq
     def _route_groq(self, system_prompt: str, user_content: str) -> Dict[str, Any]:
         from groq import Groq

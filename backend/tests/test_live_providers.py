@@ -2,10 +2,10 @@ import os
 
 import pytest
 
-from app.config import Settings
-from app.summarization.models import EmailMessageInput, EmailParticipant, SummarizationRequest
-from app.summarization.preprocessing import normalize_request
-from app.summarization.providers import (
+from src.config import Settings
+from src.summarization.models import EmailMessageInput, EmailParticipant, SummarizationRequest
+from src.summarization.preprocessing import normalize_request
+from src.summarization.providers import (
     SYSTEM_PROMPT,
     GeminiSummaryProvider,
     GroqSummaryProvider,

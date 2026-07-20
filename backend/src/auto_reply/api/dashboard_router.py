@@ -14,8 +14,10 @@ router = APIRouter(prefix="/api/v1/auto-reply/dashboard", tags=["dashboard"])
 
 @router.get("/summary", response_model=DashboardSummary)
 async def get_dashboard_summary(
-    since_days: int = Query(7, ge=1, le=365),
+    # Hours, not days: the panel's shortest window is 1h, which `since_days`
+    # could not express at all — its floor was a whole day. 8760 is a year.
+    since_hours: int = Query(24, ge=1, le=8760),
     db: AsyncSession = Depends(get_db),
 ):
     tool = StatsTool(db)
-    return await tool.get_summary(since_days=since_days)
+    return await tool.get_summary(since_hours=since_hours)

@@ -17,7 +17,7 @@ from src.email_module.templates import TemplateID
 from src.summarization.models import SummarizationResult
 
 from .contracts import Drafter, DraftResult
-from .drafters import TemplateRenderDrafter
+from .drafters import build_default_drafter
 from .llm_client import LLMClient
 
 # Template an toàn khi mọi thứ khác thất bại.
@@ -33,8 +33,9 @@ class EmailOrchestrator:
     ):
         self.template_service = template_service or EmailTemplateService()
         self.llm_client = llm_client or LLMClient()
-        # Drafter mặc định = render deterministic. Teammate có thể thay bằng LLM drafter.
-        self.drafter: Drafter = drafter or TemplateRenderDrafter(self.template_service)
+        # Drafter mặc định = LLM khi có API key, ngược lại render deterministic.
+        # Truyền `drafter=` để ép dùng một implementation cụ thể (test, so sánh).
+        self.drafter: Drafter = drafter or build_default_drafter(self.template_service)
 
     def run(self, summary: SummarizationResult) -> DraftResult:
         # 1. Chuẩn bị "vũ khí" cho LLM (email_module đã dọn sẵn).

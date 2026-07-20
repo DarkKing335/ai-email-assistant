@@ -41,6 +41,11 @@ class InboundEmailEvent:
     received_at: datetime
     to_recipients: list[str] = field(default_factory=list)
     cc_recipients: list[str] = field(default_factory=list)
+    #: The RFC 5322 ``Message-ID`` header, distinct from ``gmail_message_id``
+    #: (which is Gmail's own opaque id). Needed to set ``In-Reply-To`` and
+    #: ``References`` on a reply draft so mail clients thread it. Absent on
+    #: events from sources that do not supply headers.
+    rfc_message_id: str | None = None
 
 
 # ---------------------------------------------------------------------------

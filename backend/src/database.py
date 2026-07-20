@@ -114,7 +114,52 @@ async def init_db() -> None:
     engine = _get_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(_add_missing_columns)
     logger.info("database initialized url=%s", get_settings().database_url)
+
+
+def _add_missing_columns(connection) -> None:
+    """Add columns that exist on the models but not yet in the database.
+
+    `create_all` creates missing *tables* but never alters existing ones, so a
+    new column on a model that already has a table is silently absent and every
+    query then fails with "no such column". Deleting the database is the usual
+    workaround, but it now also destroys the stored Gmail OAuth tokens — so the
+    columns are patched in instead.
+
+    Deliberately narrow: additive `ALTER TABLE ... ADD COLUMN` only, which
+    SQLite supports and which cannot lose data. Anything else (dropping,
+    retyping, constraints) belongs in a real Alembic migration.
+    """
+    from sqlalchemy import inspect, text
+
+    inspector = inspect(connection)
+    existing_tables = set(inspector.get_table_names())
+
+    for table in Base.metadata.sorted_tables:
+        if table.name not in existing_tables:
+            continue  # create_all just made it; it is already current
+
+        present = {col["name"] for col in inspector.get_columns(table.name)}
+        for column in table.columns:
+            if column.name in present:
+                continue
+
+            # A NOT NULL column cannot be added to a table with existing rows
+            # without a default — that needs a real migration, not a guess.
+            if not column.nullable and column.server_default is None:
+                logger.warning(
+                    "column %s.%s is missing and NOT NULL — needs a migration",
+                    table.name,
+                    column.name,
+                )
+                continue
+
+            ddl = column.type.compile(connection.dialect)
+            connection.execute(
+                text(f'ALTER TABLE {table.name} ADD COLUMN "{column.name}" {ddl}')
+            )
+            logger.info("added missing column %s.%s", table.name, column.name)
 
 
 async def close_db() -> None:

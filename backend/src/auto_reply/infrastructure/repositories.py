@@ -59,7 +59,9 @@ class WhitelistRepository:
         q = select(WhitelistEntry).where(WhitelistEntry.is_active == True)  # noqa: E712
         if entry_type:
             q = q.where(WhitelistEntry.entry_type == entry_type)
-        q = q.order_by(WhitelistEntry.priority.desc(), WhitelistEntry.id.asc())
+        # Insertion order. This was already the effective order whenever
+        # priorities tied, which was the normal case.
+        q = q.order_by(WhitelistEntry.id.asc())
 
         count_q = select(func.count()).select_from(q.subquery())
         total: int = (await self._session.execute(count_q)).scalar_one()
@@ -69,11 +71,16 @@ class WhitelistRepository:
         return list(rows), total
 
     async def list_all_active_ordered(self) -> list[WhitelistEntry]:
-        """Return ALL active entries, priority-sorted (used by matcher cache)."""
+        """Return ALL active entries in insertion order (used by matcher cache).
+
+        Order no longer carries meaning: `uq_whitelist_value_active` allows only
+        one active row per value, so the matcher finds at most one exact and one
+        domain candidate however the list is sorted.
+        """
         result = await self._session.execute(
             select(WhitelistEntry)
             .where(WhitelistEntry.is_active == True)  # noqa: E712
-            .order_by(WhitelistEntry.priority.desc(), WhitelistEntry.id.asc())
+            .order_by(WhitelistEntry.id.asc())
         )
         return list(result.scalars().all())
 
@@ -82,14 +89,12 @@ class WhitelistRepository:
         *,
         entry_type: EntryType,
         value: str,
-        priority: int = 0,
         created_by: str | None = None,
     ) -> WhitelistEntry:
         entry = WhitelistEntry(
             entry_type=entry_type,
             value=value.lower().strip(),
             is_active=True,
-            priority=priority,
             created_by=created_by,
         )
         self._session.add(entry)
@@ -124,7 +129,6 @@ class WhitelistRepository:
                 if not existing.is_active:
                     # Reactivate
                     existing.is_active = True
-                    existing.priority = row.get("priority", existing.priority)
                     existing.updated_at = datetime.now(UTC)
                     inserted += 1
                 else:
@@ -135,7 +139,6 @@ class WhitelistRepository:
                         entry_type=EntryType(row["entry_type"]),
                         value=value,
                         is_active=True,
-                        priority=row.get("priority", 0),
                         created_by=row.get("created_by"),
                     )
                 )
@@ -163,6 +166,49 @@ class MatchLogRepository:
 
     async def get_by_id(self, log_id: int) -> MatchLog | None:
         return await self._session.get(MatchLog, log_id)
+
+    async def list_skipped_since(self, since: datetime) -> list[MatchLog]:
+        """Skipped logs received on/after `since`, oldest first.
+
+        These are the candidates for a whitelist rescan. Only SKIPPED is
+        eligible: it is the one outcome that says "no rule matched *at the
+        time*", so it is the only one a newly added rule can change. FAILED and
+        COMPLETED describe what happened after a rule already matched, and
+        replaying those would re-bill the LLM for work that already ran.
+
+        Oldest first so a rescan drafts replies in the order the mail arrived.
+        """
+        result = await self._session.execute(
+            select(MatchLog)
+            .where(
+                MatchLog.status == ExecutionStatus.SKIPPED,
+                MatchLog.received_at >= since,
+            )
+            .order_by(MatchLog.received_at.asc())
+        )
+        return list(result.scalars().all())
+
+    async def mark_replied(
+        self, thread_ids: set[str], *, replied_at: datetime
+    ) -> int:
+        """Stamp `replied_at` on unreplied logs in `thread_ids`. Returns the count.
+
+        `replied_at IS NULL` in the filter keeps the *first* reply's timestamp:
+        Gmail keeps returning a sent message for as long as it falls inside the
+        lookback window, so without it every sweep would push the time forward.
+        """
+        if not thread_ids:
+            return 0
+
+        result = await self._session.execute(
+            update(MatchLog)
+            .where(
+                MatchLog.gmail_thread_id.in_(thread_ids),
+                MatchLog.replied_at.is_(None),
+            )
+            .values(replied_at=replied_at)
+        )
+        return result.rowcount or 0
 
     async def create(
         self,

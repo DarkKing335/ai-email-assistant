@@ -18,6 +18,7 @@ from src.auto_reply.tools.whitelist_tool import (
     WhitelistTool,
     WhitelistValidationError,
 )
+from src.auto_reply.workflow.rescan import request_rescan
 from src.database import get_db
 
 logger = logging.getLogger(__name__)
@@ -32,19 +33,16 @@ router = APIRouter(prefix="/api/v1/whitelist", tags=["whitelist"])
 
 class WhitelistEntryCreate(BaseModel):
     value: str = Field(..., description="Email address or @domain.com")
-    priority: int = Field(0, description="Higher priority = evaluated first")
 
 
 class WhitelistEntryUpdate(BaseModel):
     value: str | None = None
-    priority: int | None = None
 
 
 class WhitelistEntryResponse(BaseModel):
     id: int
     entry_type: str
     value: str
-    priority: int
     created_at: str
 
     @classmethod
@@ -53,7 +51,6 @@ class WhitelistEntryResponse(BaseModel):
             id=obj.id,
             entry_type=obj.entry_type.value,
             value=obj.value,
-            priority=obj.priority,
             created_at=obj.created_at.isoformat(),
         )
 
@@ -103,11 +100,11 @@ async def create_whitelist_entry(
 ):
     tool = WhitelistTool(db)
     try:
-        entry = await tool.create_entry(
-            value=payload.value,
-            priority=payload.priority,
-        )
+        entry = await tool.create_entry(value=payload.value)
         invalidate_whitelist_cache()
+        # Note: adding a rule does *not* re-examine mail already filed as
+        # skipped. That sweep drafts real replies, so it stays an explicit
+        # action — POST /rescan.
         return WhitelistEntryResponse.from_orm(entry)
     except WhitelistValidationError as e:
         raise HTTPException(status_code=422, detail=e.args[0])
@@ -144,6 +141,22 @@ async def delete_whitelist_entry(entry_id: int, db: AsyncSession = Depends(get_d
         invalidate_whitelist_cache()
     except WhitelistEntryNotFound:
         raise HTTPException(status_code=404, detail="Entry not found")
+
+
+@router.post("/rescan", status_code=status.HTTP_202_ACCEPTED)
+async def rescan_skipped_mail():
+    """Re-examine recently skipped mail against the current whitelist.
+
+    Deliberately the only way a rescan starts. Whitelist writes do not trigger
+    one: the sweep re-fetches messages from Gmail, calls the LLM and files real
+    drafts in the mailbox, and adding a rule should not do all that as a side
+    effect. Bounded by `whitelist_rescan_lookback_hours`.
+
+    202, not 200: the sweep runs on the background worker and its result is not
+    known when this returns. Watch the Logs panel for the outcome.
+    """
+    request_rescan()
+    return {"status": "accepted"}
 
 
 @router.post("/import")

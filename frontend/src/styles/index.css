@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+
+/*
+ * Theme: white with a pastel-mint accent, seeded from #B5EAD7.
+ *
+ * Two scales, both on that pastel's own hue (OKLCH H=171) so nothing in the
+ * panel reads as a different family:
+ *
+ *   ink   — near-neutral greys carrying a trace of the hue (C≈0.016). Text,
+ *           borders, and the dark surface. Replaces Tailwind's blue-grey slate,
+ *           which fought the mint.
+ *   brand — the accent proper. `brand-200` IS #B5EAD7; the scale runs through it.
+ *
+ * Contrast is computed, not eyeballed. The pastel is very light (1.34:1 against
+ * white), so it can only ever be a *surface* — it carries dark ink on top, never
+ * white text. White text needs `brand-700` (5.36:1); `brand-600` is 3.66:1 and
+ * fails, so do not "brighten" the primary button to it.
+ */
+@theme {
+  --color-ink-50: #f6fbf9;
+  --color-ink-100: #eef7f3;
+  --color-ink-200: #dfeae6;
+  --color-ink-300: #cad7d2;
+  --color-ink-400: #95a39e;
+  --color-ink-500: #697671;
+  --color-ink-600: #4b5753;
+  --color-ink-700: #38433f;
+  --color-ink-800: #212d29;
+  --color-ink-900: #121f1a;
+  --color-ink-950: #071410;
+
+  --color-brand-50: #ecfbf5;
+  --color-brand-100: #d6f5e9;
+  --color-brand-200: #b5ead7;
+  --color-brand-300: #9addc6;
+  --color-brand-400: #72c4a9;
+  --color-brand-500: #4fae91;
+  --color-brand-600: #2b9679;
+  --color-brand-700: #0c7960;
+  --color-brand-800: #005e49;
+  --color-brand-900: #014938;
+  --color-brand-950: #00281d;
+}
+
+/*
+ * The side panel is a narrow, resizable document. Give the React root a full
+ * height to lay out against, and never allow sideways scrolling — wide content
+ * (tables, long subjects) has to scroll inside its own container instead.
+ */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/*
+ * Data-visualisation tokens.
+ *
+ * These are a *status* palette, not a categorical one: each hue means a fixed
+ * state. Re-validated against the current surfaces (#ffffff light, ink-950
+ * #071410 dark) — all three hues clear 3:1 against both. Do not substitute
+ * colours here by eye; re-run the validator.
+ *
+ * The good/critical pair is red-vs-green, which is near-indistinguishable under
+ * deuteranopia (ΔE 4.1). That is inherent to the convention and is why every
+ * consumer direct-labels its segments and carries an `aria-label` — identity is
+ * never on colour alone here. Keep it that way if you add a chart.
+ *
+ * `completed` and `failed` are mode-invariant by design; only the blue and the
+ * neutral re-step for the dark surface.
+ */
+.viz-root {
+  --viz-completed: #0ca30c; /* status: good */
+  --viz-progress: #2a78d6; /* status: in flight, light step */
+  --viz-failed: #d03b3b; /* status: critical */
+  --viz-skipped: #b8c5c0; /* neutral track — on the ink hue, deliberately low chroma */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) .viz-root {
+    --viz-progress: #3987e5;
+    --viz-skipped: #2c3934;
+  }
+}
+
+:root[data-theme='dark'] .viz-root {
+  --viz-progress: #3987e5;
+  --viz-skipped: #2c3934;
+}

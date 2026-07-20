@@ -141,7 +141,6 @@ class RowValidationResult:
     row_index: int
     value: str
     entry_type: str
-    priority: int
     errors: list[str] = field(default_factory=list)
 
     @property
@@ -152,7 +151,9 @@ class RowValidationResult:
 def validate_import_row(row_index: int, row: dict[str, Any]) -> RowValidationResult:
     """Validate a single CSV/Excel import row.
 
-    Expected keys: ``value`` (required), ``priority`` (optional int).
+    Expected keys: ``value`` (required). Any other column — notably ``priority``
+    from files exported before it was removed — is ignored rather than rejected,
+    so old CSVs still import.
     """
     errors: list[str] = []
     raw_value = str(row.get("value", "")).strip()
@@ -167,19 +168,10 @@ def validate_import_row(row_index: int, row: dict[str, Any]) -> RowValidationRes
         except GuardrailError as exc:
             errors.append(exc.message)
 
-    # Priority
-    raw_priority = row.get("priority", 0)
-    try:
-        priority = int(raw_priority) if raw_priority is not None and raw_priority != "" else 0
-    except (TypeError, ValueError):
-        priority = 0
-        errors.append(f"Invalid priority '{raw_priority}'; must be an integer. Defaulting to 0.")
-
     return RowValidationResult(
         row_index=row_index,
         value=normalised_value,
         entry_type=entry_type,
-        priority=priority,
         errors=errors,
     )
 

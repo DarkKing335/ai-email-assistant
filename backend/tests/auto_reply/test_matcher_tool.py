@@ -7,12 +7,12 @@ from src.auto_reply.tools.whitelist_tool import WhitelistTool
 @pytest.mark.asyncio
 async def test_matcher_precedence(db_session):
     wl_tool = WhitelistTool(db_session)
-    await wl_tool.create_entry("@company.com", priority=10)
-    await wl_tool.create_entry("vip@company.com", priority=5)
+    await wl_tool.create_entry("@company.com")
+    await wl_tool.create_entry("vip@company.com")
     
     matcher = MatcherTool(db_session)
     
-    # 1. Exact match takes precedence even if priority is lower
+    # 1. Exact match takes precedence over the domain rule
     res1 = await matcher.match("vip@company.com")
     assert res1 is not None
     assert res1.match_type == "exact_email"

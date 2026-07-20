@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from src.database import close_db, init_db
@@ -16,7 +17,9 @@ from src.summarization.models import ErrorResponse
 # AutoReply routers
 from src.auto_reply.api.dashboard_router import router as dashboard_router
 from src.auto_reply.api.draft_router import router as draft_router
+from src.auto_reply.api.gmail_auth_router import router as gmail_auth_router
 from src.auto_reply.api.gmail_router import router as gmail_router
+from src.auto_reply.api.inbox_router import router as inbox_router
 from src.auto_reply.api.log_router import router as log_router
 from src.auto_reply.api.whitelist_router import router as whitelist_router
 from src.auto_reply.workflow.background_worker import start_workers, stop_workers
@@ -45,8 +48,10 @@ app.include_router(orchestrator_router)
 app.include_router(whitelist_router)
 app.include_router(draft_router)
 app.include_router(log_router)
+app.include_router(inbox_router)
 app.include_router(dashboard_router)
 app.include_router(gmail_router)
+app.include_router(gmail_auth_router)
 
 
 @app.middleware("http")
@@ -55,6 +60,23 @@ async def assign_request_id(request: Request, call_next):
     response = await call_next(request)
     response.headers["X-Request-ID"] = request.state.request_id
     return response
+
+
+# Registered last so it wraps the request-id middleware: preflight OPTIONS are
+# answered here and never reach the app.
+#
+# Unpacked extensions get a new origin (chrome-extension://<id>) on every reload,
+# so the origin can't be pinned during development. There is no auth and no
+# cookie to protect, and browsers reject "*" together with credentials — hence
+# allow_credentials=False. Tighten both before this is ever deployed.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["X-Request-ID"],  # otherwise the browser hides it from JS
+)
 
 
 @app.exception_handler(SummarizationError)
