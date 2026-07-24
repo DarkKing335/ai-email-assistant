@@ -20,8 +20,10 @@ Gmail ──poll──▶ whitelist ──match──▶ summarise ──▶ rou
                                                           shown in the side panel
 ```
 
-Each whitelisted email costs **two LLM calls** — one to summarise, one to pick a
-reply template. Senders that match no rule cost nothing.
+Each whitelisted email normally performs **three logical LLM operations** —
+summarise, choose a reply template, and compose the response. Provider retries
+or fallbacks can increase the actual call count. Senders that match no rule
+cost nothing.
 
 Once you reply on a thread, the email retires from the Inbox view automatically.
 The backend notices by scanning your sent mail, so replies you typed by hand
@@ -256,6 +258,8 @@ Revoke access at any time, independently of this app:
 
 | Document | Contents |
 |---|---|
+| [docs/demo.md](docs/demo.md) | Mentor-facing live demo plan, script, expected results, and troubleshooting |
+| [docs/architecture/system-architecture.md](docs/architecture/system-architecture.md) | Current components, data flows, storage, security boundaries, and design decisions |
 | [docs/setup/gmail-oauth.md](docs/setup/gmail-oauth.md) | Full OAuth walkthrough + troubleshooting table |
 | [frontend/README.md](frontend/README.md) | Extension layout, Node version pins, MV3 constraints |
 | [backend/README.md](backend/README.md) | Summarization service contract |
